@@ -29,15 +29,15 @@ cp -n .env.example .env
 
 ## Kết quả
 
-[Báo cáo 100 câu](reports/benchmark_100.md) có bảng so sánh, usage và tám trường hợp lỗi; [comparison.json](reports/comparison.json) chứa metrics dạng máy đọc được. Kết quả dùng subset cố định 100 câu/20 DB, cùng model, và 695 official test-suite SQLite files. Đây là adapted reproduction; không phải full Spider dev hoặc điểm paper gốc.
+[Benchmark native CLI mới](reports/benchmark_native_100_20261017.md) và [comparison JSON](reports/comparison_native_100_20261017.json) ghi kết quả chạy lại sau migration. Bốn method dùng cùng subset cố định 100 câu/20 DB, cùng model và 695 official test-suite SQLite files. Đây là adapted reproduction; không phải full Spider dev hoặc điểm paper gốc.
 
-Benchmark này được chạy trước migration sang forks/submodules. [Historical manifest](experiments/historical/spider-v1-main-100.json) giữ provenance gốc; các [prepared manifests](experiments/README.md) mô tả cấu hình experiment mới, chưa có nghĩa inference đã chạy.
+[Báo cáo trước migration](reports/benchmark_100.md), [comparison cũ](reports/comparison.json) và [historical manifest](experiments/historical/spider-v1-main-100.json) được giữ nguyên. [Completed record](experiments/completed/native-main-100-20261017.json) ghi hashes của artifacts lượt mới; các [prepared manifests](experiments/README.md) chỉ mô tả cấu hình, tự chúng chưa chứng minh inference đã chạy.
 
 ## Cấu trúc
 
 - `scripts/`, `tests/`: orchestration, evaluation và kiểm tra chung.
 - `third_party/`: ba method forks và hai evaluator submodules.
 - `configs/`, `data/splits/`: cấu hình, nguồn/hash dữ liệu và fixed dataset manifest. Dependency locks của methods nằm trong từng fork.
-- `experiments/`: prepared manifests và tham chiếu benchmark cũ.
+- `experiments/`: prepared manifests, completed records và tham chiếu benchmark cũ.
 - `docs/`, `reports/`: hướng dẫn và kết quả.
 - `data/spider/`, `data/assets/`, `data/prepared/`, `data/test-suite/`, `runs/`: dữ liệu/artifacts local, Git ignore.

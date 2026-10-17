@@ -1,0 +1,108 @@
+{
+  "model": "cx/gpt-6-luna",
+  "input_hash": "294738963c501359d15ddab5bc39a90872922a9eca7f6d016debb5a62811581e",
+  "n": 100,
+  "dbs": 20,
+  "suite_files": 695,
+  "metric": "test_suite_execution_accuracy",
+  "plug_value": false,
+  "keep_distinct": true,
+  "sampling": "db-balanced-round-robin-v1",
+  "seed": 42,
+  "difficulty_counts": {
+    "hard": 20,
+    "medium": 41,
+    "extra": 17,
+    "easy": 22
+  },
+  "experiment_manifest": "experiments/manifests/native-main-100-20261017.json",
+  "execution_mode": "sequential native CLI inference; evaluations after all inference",
+  "results": [
+    {
+      "method": "Vanilla",
+      "run": "runs/spider-v1-native-20261017-vanilla",
+      "model": "cx/gpt-6-luna",
+      "n": 100,
+      "test_suite_correct": 64,
+      "original_db_correct": 77,
+      "valid_sql": 99,
+      "api_requests": 100,
+      "prompt_tokens_observed": 268458,
+      "completion_tokens_observed": 5874,
+      "prompt_token_coverage_n": 100,
+      "completion_token_coverage_n": 100,
+      "mean_inference_s": 2.0279254999390104,
+      "median_inference_s": 1.8173931045166682,
+      "statuses": {
+        "ok": 100
+      },
+      "test_suite_delta_pp": -5,
+      "original_db_delta_pp": -4
+    },
+    {
+      "method": "DAIL-SQL",
+      "run": "runs/spider-v1-native-20261017-dail",
+      "model": "cx/gpt-6-luna",
+      "n": 100,
+      "test_suite_correct": 74,
+      "original_db_correct": 85,
+      "valid_sql": 100,
+      "api_requests": 200,
+      "prompt_tokens_observed": 648529,
+      "completion_tokens_observed": 14656,
+      "prompt_token_coverage_n": 100,
+      "completion_token_coverage_n": 100,
+      "mean_inference_s": 4.504045234857476,
+      "median_inference_s": 4.376214958494529,
+      "statuses": {
+        "ok": 100
+      },
+      "test_suite_delta_pp": -2,
+      "original_db_delta_pp": -2
+    },
+    {
+      "method": "DIN-SQL",
+      "run": "runs/spider-v1-native-20261017-din",
+      "model": "cx/gpt-6-luna",
+      "n": 100,
+      "test_suite_correct": 78,
+      "original_db_correct": 87,
+      "valid_sql": 99,
+      "api_requests": 400,
+      "prompt_tokens_observed": 1828502,
+      "completion_tokens_observed": 30761,
+      "prompt_token_coverage_n": 98,
+      "completion_token_coverage_n": 98,
+      "mean_inference_s": 12.30922763252107,
+      "median_inference_s": 9.14641645847587,
+      "statuses": {
+        "ok": 99,
+        "parse_error": 1
+      },
+      "test_suite_delta_pp": 0,
+      "original_db_delta_pp": 1
+    },
+    {
+      "method": "MAC-SQL",
+      "run": "runs/spider-v1-native-20261017-mac",
+      "model": "cx/gpt-6-luna",
+      "n": 100,
+      "test_suite_correct": 67,
+      "original_db_correct": 83,
+      "valid_sql": 100,
+      "api_requests": 125,
+      "prompt_tokens_observed": 525342,
+      "completion_tokens_observed": 10514,
+      "prompt_token_coverage_n": 100,
+      "completion_token_coverage_n": 100,
+      "mean_inference_s": 3.946518124140566,
+      "median_inference_s": 3.092726187489461,
+      "statuses": {
+        "ok": 100
+      },
+      "test_suite_delta_pp": -6,
+      "original_db_delta_pp": -3
+    }
+  ],
+  "baseline_comparison": "reports/comparison.json"
+}
