@@ -5,10 +5,6 @@ description = "Spider reproduction orchestration and evaluation helpers"
 requires-python = ">=3.11"
 dependencies = ["openai>=1.60,<3", "python-dotenv>=1,<2", "nltk>=3.9,<4", "sqlparse>=0.5,<1"]
 
-[project.optional-dependencies]
-din = ["pandas>=2,<3"]
-mac = ["pandas>=2,<3", "tiktoken>=0.7,<1", "func-timeout>=4.3,<5"]
-
 [dependency-groups]
 dev = ["ruff>=0.9,<1", "pytest>=8,<10"]
 

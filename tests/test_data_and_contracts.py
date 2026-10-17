@@ -2,7 +2,7 @@ import pytest
 
 from scripts.common.contracts import failure, validate_inputs, validate_predictions
 from scripts.common.io import read_jsonl
-from scripts.normalize_outputs import normalize
+from scripts.common.normalization import normalize
 from scripts.prepare_spider import prepare, select_indices
 
 

@@ -1,41 +1,50 @@
 # Text-to-SQL Reproduction
 
-Chạy inference Vanilla, DAIL-SQL, DIN-SQL và MAC-SQL trên Spider 1.0 bằng cùng model OpenAI Compatible; không training. Mỗi method fork tự gọi API và chạy độc lập; repo chính điều phối các CLI và chấm điểm. Ba forks và hai evaluator được ghim bằng Git submodules.
+So sánh Vanilla, DAIL-SQL, DIN-SQL và MAC-SQL trên Spider 1.0 bằng cùng model OpenAI Compatible; không training. Repo chính điều phối ba method forks qua native CLI và chấm bằng official `test-suite-sql-eval`.
+
+```text
+repo chính → Vanilla / ba fork → predictions → evaluator chung → báo cáo
+```
 
 ## Bắt đầu
 
 ```bash
 git clone --recurse-submodules https://github.com/dleqhuy/text2sql-reproduction.git
 cd text2sql-reproduction
-UV_CACHE_DIR=.uv-cache uv sync --locked
+uv sync --locked
 uv run python -m scripts.bootstrap_upstream
 cp -n .env.example .env
 ```
 
-Điền `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL` trong `.env`. Nếu đã có file này, giữ nguyên cấu hình. Tiếp tục theo [runbook](docs/reproducibility.md) để tải dữ liệu, dựng môi trường từng method và chạy inference/evaluation.
+Điền `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL` trong `.env`. Theo [running](docs/running.md) để dựng environments/dữ liệu, rồi chạy với manifest đã chuẩn bị cho revision hiện tại:
+
+```bash
+uv run python -m scripts.benchmark --experiment-manifest experiments/manifests/main-v2.json --run-dir runs/my-benchmark
+```
 
 ## Tài liệu
 
-| Cần làm gì | Tài liệu |
-|---|---|
-| Cài đặt và chạy lại | [Runbook](docs/reproducibility.md) |
-| Sửa fork, trace diff, tạo experiment manifest | [Repository workflow](docs/repository_workflow.md) |
-| Hiểu các method và adaptations | [Method audit](docs/repo_audit.md) |
-| Tải Spider và chuẩn bị subset | [Dataset](docs/spider_dataset.md) |
-| Hiểu protocol và metrics | [Experiment protocol](docs/experiment_protocol.md) |
-| Đọc input/output, checkpoints và metadata | [Contracts](docs/contracts.md) |
+- [Running](docs/running.md): setup, dữ liệu, benchmark, resume và chấm lại.
+- [Methods](docs/methods.md): pipelines, adaptations, protocol và giới hạn.
+- [Development](docs/development.md): Git/submodules, trace diff, manifests, contracts và tests.
 
-## Kết quả
+## Kết quả hiện tại
 
-[Benchmark 100 câu](reports/benchmark_native_100_20261017.md) và [comparison JSON](reports/comparison_native_100_20261017.json) ghi kết quả của bốn method trên cùng subset cố định 100 câu/20 DB, cùng model và 695 official test-suite SQLite files. Đây là adapted reproduction; không phải full Spider dev hoặc điểm paper gốc.
+100 câu/20 DB, model `cx/gpt-6-luna`; 695 official test-suite SQLite files.
 
-[Completed record](experiments/completed/native-main-100-20261017.json) ghi hashes của artifacts; các [prepared manifests](experiments/README.md) chỉ mô tả cấu hình, tự chúng chưa chứng minh inference đã chạy. Phạm vi kiểm chứng và giới hạn ở [experiment protocol](docs/experiment_protocol.md).
+| Method | Test Suite Accuracy | Execution Accuracy — DB gốc |
+|---|---:|---:|
+| Vanilla | 64% | 77% |
+| DAIL-SQL | 74% | 85% |
+| DIN-SQL | 78% | 87% |
+| MAC-SQL | 67% | 83% |
+
+[Báo cáo](reports/benchmark_native_100_20261017.md) · [Metrics JSON](reports/comparison_native_100_20261017.json) · [Completed record](experiments/completed/native-main-100-20261017.json). Đây là adapted reproduction trên subset, không phải full Spider dev hoặc điểm paper gốc.
 
 ## Cấu trúc
 
-- `scripts/`, `tests/`: orchestration, evaluation và kiểm tra chung.
-- `third_party/`: ba method forks và hai evaluator submodules.
-- `configs/`, `data/splits/`: cấu hình, nguồn/hash dữ liệu và fixed dataset manifest. Dependency locks của methods nằm trong từng fork.
-- `experiments/`: prepared manifests và completed records.
+- `scripts/`, `tests/`: điều phối, chấm điểm và kiểm thử.
+- `third_party/`: ba method forks và hai evaluator, ghim bằng Git submodules.
+- `configs/`, `data/splits/`, `experiments/`: cấu hình, data hashes và experiment records.
 - `docs/`, `reports/`: hướng dẫn và kết quả.
-- `data/spider/`, `data/assets/`, `data/prepared/`, `data/test-suite/`, `runs/`: dữ liệu/artifacts local, Git ignore.
+- `data/`, `runs/`, `.venv/`: dữ liệu/assets, artifacts và environments local được Git ignore; `data/splits/` được theo dõi.

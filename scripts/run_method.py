@@ -1,4 +1,4 @@
-"""Common bounded runner for Vanilla and thin upstream adapters."""
+"""Run Vanilla or a pinned standalone method CLI with bounded API usage."""
 
 import argparse
 import contextlib
@@ -146,13 +146,12 @@ def run(args):
     print(f"Finished {args.method}: {ok}/{len(inputs)} SQL outputs; artifacts in {args.run_dir}")
 
 
-def main(default_method=None):
+def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--method",
         choices=["vanilla", *REPOS],
-        default=default_method,
-        required=default_method is None,
+        required=True,
     )
     parser.add_argument("--input", required=True)
     parser.add_argument("--manifest", required=True)

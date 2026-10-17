@@ -91,7 +91,7 @@
   ],
   "artifacts": {
     "reports/benchmark_native_100_20261017.md": {
-      "sha256": "2fe67efc094985c5cdd720ce059a2d5b2b1bd15f73184c0a8d626e83f392a251"
+      "sha256": "ac5d0d6956d9bab5682045dde6fe441d3cd830fc55a4adc7854c5383cefb3c81"
     },
     "reports/comparison_native_100_20261017.json": {
       "sha256": "4dae70efa70bc1d7d57abe9a3fa5e88f13bd4a4e8803a76631e7c10fe657e732"
@@ -1816,5 +1816,5 @@
       "sha256": "09d08cfac97bb6598f46e5e4d6b6d5ada77439745d1db8319ed8c2c1e69e8117"
     }
   },
-  "documentation_note": "Removed comparisons to the retired benchmark during documentation cleanup. Report/comparison hashes reflect this edit; inference outputs, evaluation metrics, and the prepared source manifest are unchanged."
+  "documentation_note": "Report links and rerun instructions follow the current documentation/CLI. Inference outputs, evaluation metrics, and the prepared source manifest are unchanged. Retired benchmark comparisons were removed during earlier cleanup."
 }
