@@ -1,6 +1,6 @@
 # Kế hoạch implementation
 
-Ngày khảo sát: **17/10/2026**. Trạng thái: **chưa triển khai**. Tài liệu này chuyển định hướng clone-first trong [README](../../README.md) thành các đầu việc có thể thực hiện và nghiệm thu. Các đường dẫn mã nguồn, cấu hình và CLI được đề xuất bên dưới chưa tồn tại, trừ khi được ghi rõ là hiện có.
+Ngày khảo sát: **17/10/2026**. Trạng thái lúc lập kế hoạch: **chưa triển khai**. Cập nhật hiện tại ở [status.md](status.md). Tài liệu này chuyển định hướng clone-first trong [README](../../README.md) thành các đầu việc có thể thực hiện và nghiệm thu. Các đường dẫn mã nguồn, cấu hình và CLI được đề xuất bên dưới chưa tồn tại, trừ khi được ghi rõ là hiện có.
 
 ## Hiện trạng đã kiểm tra
 

@@ -1,61 +1,15 @@
-# MAC-SQL — Clone/Configure/Run Guide
+# MAC-SQL — adapter implemented
 
-**Upstream:** https://github.com/wbbeyourself/MAC-SQL  
-**Paper:** https://arxiv.org/abs/2312.11242
+Upstream: [MAC-SQL](https://github.com/wbbeyourself/MAC-SQL), commit `31a9df5e0d520be4769be57a4b9022e5e34a14f4`. Chọn API inference, không training/SQL-Llama.
 
-## Reproduction target
-Run the GPT/API-based multi-agent inference path on the fixed Spider dev subset, retaining Selector, Decomposer and Refiner roles and execution-feedback correction. **Do not choose a fine-tuning workflow.**
+Đã audit `core/api_config.py` (Azure/hardcoded model), `core/llm.py` (legacy API/retry), `core/agents.py:42,598,661` (Selector/Decomposer/Refiner), `core/agents.py:672` (execute), `core/const.py:1` (MAX_ROUND=3).
 
-## Clone
-```bash
-git clone https://github.com/wbbeyourself/MAC-SQL third_party/MAC-SQL
-git -C third_party/MAC-SQL rev-parse HEAD
-```
+Adapter import chính các class agent gốc và giữ thứ tự/điều kiện dừng của ChatManager.start. Bridge thay transport trước khi import, không load Azure config. Bỏ Hello-world ping/gold metadata; thêm idx cho logger. Khôi phục absolute DB root sau khi Selector strip leading slash.
 
-## Audit: fill after reading the cloned code
-| Question | Verified answer |
-|---|---|
-| Upstream commit | TODO |
-| Python/dependency requirements | TODO |
-| GPT/API-based inference entry script + exact CLI | TODO |
-| API key location (`file:line`) | TODO |
-| Model name location (`file:line`) | TODO |
-| OpenAI SDK/API call (`file:line`) | TODO |
-| Selector/Decomposer/Refiner definitions (`file:line`) | TODO |
-| SQLite execution/refinement and loop limits (`file:line`) | TODO |
-| Spider input and prediction output format | TODO |
-| Minimal patch + patch file | TODO |
-| Tested 1 / 10 / 100+ examples | TODO |
+Metadata connection read-only; Refiner worker chạy SQL có timeout, trả preview/error theo contract gốc. Giữ execution feedback. Model/temp từ config chung; token cap mặc định 1024; MAX_ROUND=3.
 
-## Search likely integration points
-```bash
-grep -RInE 'OPENAI_API_KEY|api_key|ChatCompletion|Completion\.create|chat\.completions|model=|gpt-' third_party/MAC-SQL --include='*.py' --include='*.sh' | head -100
-grep -RInE 'Selector|Decomposer|Refiner|sqlite|execute|retry|spider|prediction' third_party/MAC-SQL --include='*.py' | head -100
-```
+Environment `third_party/MAC-SQL/.venv`, Python 3.11.16; snapshot `configs/environments/mac-requirements.txt`. CLI: `third_party/MAC-SQL/.venv/bin/python -m scripts.run_method --help`, chọn `--method mac_sql`. Lệnh đầy đủ ở [runbook](../reproducibility.md).
 
-## Expected run workflow
-1. Identify the official GPT inference path, not optional fine-tuning scripts.
-2. Set up a separate Python environment; check SDK version compatibility.
-3. Configure Spider paths, API key, model, retry/agent iteration limits.
-4. Test one question with **read-only** SQLite and log agent steps.
-5. Run fixed 10, then 100–200 dev IDs; normalize final SQL and errors.
-6. Evaluate on shared Spider evaluator; record latency and API calls.
+Real provider fixture `runs/fixture-v2-mac` sinh SQL hợp lệ, evaluator đúng 1/1. Schema nhỏ skip LLM Selector theo heuristic gốc; không phải tắt agent. Test offline có SQL sai để buộc Refiner sửa qua execution feedback. Đã chạy cùng smoke 10 Spider thật, gồm các schema kích hoạt pruning; xem [report](../../reports/spider_smoke.md). Main 100 đã hoàn thành.
 
-**Exact inference command:** TODO — verify in cloned repo first.
-
-## Reproduction fidelity checklist
-- [ ] Selector, Decomposer, Refiner remain present.
-- [ ] Execution feedback/refinement is preserved or deviations documented.
-- [ ] Generated SQL executes only on read-only DB copies.
-- [ ] Same model and dev IDs as other methods.
-
-## uv environment and Ruff rules
-
-Use `uv` instead of `pip`/`venv` for this upstream repository. Check its README and supported Python version before choosing `--python`. From the project root:
-
-```bash
-uv venv third_party/REPO_NAME/.venv --python 3.10
-uv pip install --python third_party/REPO_NAME/.venv/bin/python -r third_party/REPO_NAME/requirements.txt
-```
-
-**Replace `REPO_NAME` with the actual clone folder.** The requirements command is applicable only if the file exists; otherwise follow the verified upstream setup. Run upstream inference using that repository's `.venv/bin/python` and verified entry point. Do not run `ruff format` across cloned upstream source. Format team-owned adapters with `uv run ruff format scripts/` and lint with `uv run ruff check scripts/`.
+Parser hiện nhận SQL thuần hoặc code fence (lấy SQL block cuối như source); sentinel lỗi không được coi là final SQL hợp lệ. Agent classes, transitions và refinement vẫn giữ nguyên. Smoke v2 đủ 10/10 outputs, TSA 7/10. Main 100 đã hoàn thành; xem [benchmark report](../../reports/benchmark_100.md).

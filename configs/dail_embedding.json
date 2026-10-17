@@ -1,0 +1,5 @@
+{
+  "model": "sentence-transformers/all-mpnet-base-v2",
+  "revision": "e8c3b32edf5434bc2275fc9bab85f82640a19130",
+  "local_path": "data/assets/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130"
+}

@@ -1,0 +1,15 @@
+{
+  "provider": "openai-compatible",
+  "temperature": 0,
+  "max_output_tokens": 1024,
+  "token_parameter": "max_tokens",
+  "request_timeout_s": 90,
+  "max_attempts": 3,
+  "retry_base_s": 1,
+  "max_run_calls": 1000,
+  "max_run_seconds": 14400,
+  "sql_timeout_s": 5,
+  "subset_size": 100,
+  "smoke_size": 10,
+  "seed": 42
+}

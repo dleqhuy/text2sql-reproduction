@@ -1,0 +1,96 @@
+{
+  "model": "cx/gpt-6-luna",
+  "input_hash": "294738963c501359d15ddab5bc39a90872922a9eca7f6d016debb5a62811581e",
+  "n": 100,
+  "dbs": 20,
+  "suite_files": 695,
+  "metric": "test_suite_execution_accuracy",
+  "plug_value": false,
+  "keep_distinct": true,
+  "sampling": "db-balanced-round-robin-v1",
+  "seed": 42,
+  "difficulty_counts": {
+    "hard": 20,
+    "medium": 41,
+    "extra": 17,
+    "easy": 22
+  },
+  "results": [
+    {
+      "method": "Vanilla",
+      "run": "spider-v1-main-vanilla",
+      "model": "cx/gpt-6-luna",
+      "n": 100,
+      "test_suite_correct": 69,
+      "original_db_correct": 81,
+      "valid_sql": 100,
+      "api_requests": 100,
+      "prompt_tokens_observed": 268458,
+      "completion_tokens_observed": 5727,
+      "prompt_token_coverage_n": 100,
+      "completion_token_coverage_n": 100,
+      "mean_inference_s": 1.9454936132702279,
+      "median_inference_s": 1.758267541503301,
+      "statuses": {
+        "ok": 100
+      }
+    },
+    {
+      "method": "DAIL-SQL",
+      "run": "spider-v1-main-dail",
+      "model": "cx/gpt-6-luna",
+      "n": 100,
+      "test_suite_correct": 76,
+      "original_db_correct": 87,
+      "valid_sql": 100,
+      "api_requests": 200,
+      "prompt_tokens_observed": 648811,
+      "completion_tokens_observed": 14300,
+      "prompt_token_coverage_n": 100,
+      "completion_token_coverage_n": 100,
+      "mean_inference_s": 4.024350947926869,
+      "median_inference_s": 3.9166100835136604,
+      "statuses": {
+        "ok": 100
+      }
+    },
+    {
+      "method": "DIN-SQL",
+      "run": "spider-v1-main-din",
+      "model": "cx/gpt-6-luna",
+      "n": 100,
+      "test_suite_correct": 78,
+      "original_db_correct": 86,
+      "valid_sql": 96,
+      "api_requests": 400,
+      "prompt_tokens_observed": 1873670,
+      "completion_tokens_observed": 30210,
+      "prompt_token_coverage_n": 100,
+      "completion_token_coverage_n": 100,
+      "mean_inference_s": 8.325167625429458,
+      "median_inference_s": 8.083842354506487,
+      "statuses": {
+        "ok": 100
+      }
+    },
+    {
+      "method": "MAC-SQL",
+      "run": "spider-v1-main-mac",
+      "model": "cx/gpt-6-luna",
+      "n": 100,
+      "test_suite_correct": 73,
+      "original_db_correct": 86,
+      "valid_sql": 100,
+      "api_requests": 125,
+      "prompt_tokens_observed": 524885,
+      "completion_tokens_observed": 10216,
+      "prompt_token_coverage_n": 100,
+      "completion_token_coverage_n": 100,
+      "mean_inference_s": 3.438399827093235,
+      "median_inference_s": 2.640986916492693,
+      "statuses": {
+        "ok": 100
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "dail_sql": {
+    "directory": "DAIL-SQL",
+    "url": "https://github.com/BeachWang/DAIL-SQL",
+    "commit": "2061f68112222083134a0c9e2877961ff315ff44"
+  },
+  "din_sql": {
+    "directory": "Few-shot-NL2SQL-with-prompting",
+    "url": "https://github.com/MohammadrezaPourreza/Few-shot-NL2SQL-with-prompting",
+    "commit": "0474801616130413b024fd008b016a190684649e"
+  },
+  "mac_sql": {
+    "directory": "MAC-SQL",
+    "url": "https://github.com/wbbeyourself/MAC-SQL",
+    "commit": "31a9df5e0d520be4769be57a4b9022e5e34a14f4"
+  },
+  "spider": {
+    "directory": "spider",
+    "url": "https://github.com/taoyds/spider",
+    "commit": "b7b5b8c890cd30e35427348bb9eb8c6d1350ca7c"
+  },
+  "test_suite": {
+    "directory": "test-suite-sql-eval",
+    "url": "https://github.com/taoyds/test-suite-sql-eval",
+    "commit": "e97acc546ecbee8fa27fa8dbf025ef61493a876c"
+  }
+}

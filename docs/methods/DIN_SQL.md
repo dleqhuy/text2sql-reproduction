@@ -1,59 +1,15 @@
-# DIN-SQL — Clone/Configure/Run Guide
+# DIN-SQL — adapter implemented
 
-**Upstream:** https://github.com/MohammadrezaPourreza/Few-shot-NL2SQL-with-prompting  
-**Paper:** https://arxiv.org/abs/2304.11015
+Upstream: [Few-shot-NL2SQL-with-prompting](https://github.com/MohammadrezaPourreza/Few-shot-NL2SQL-with-prompting), commit `0474801616130413b024fd008b016a190684649e`. Adapter nạp prompt definitions bằng AST từ `DIN-SQL.py`, không viết lại prompts.
 
-## Reproduction target
-Run the authors' decomposed prompting pipeline on the fixed Spider dev subset: schema linking, question classification/decomposition, SQL generation, and self-correction as supported by the repository. No training.
+Đã audit argv line 437, credential stub sai cú pháp line 444, prompt makers từ 452, API generation/debug tại 572/587 và pipeline gốc tại 602. Loader thay đúng stub `API_KEY = #key` thành None trong bộ nhớ để parse; bỏ side effects và legacy API functions khỏi AST được chạy.
 
-## Clone
-```bash
-git clone https://github.com/MohammadrezaPourreza/Few-shot-NL2SQL-with-prompting third_party/Few-shot-NL2SQL-with-prompting
-git -C third_party/Few-shot-NL2SQL-with-prompting rev-parse HEAD
-```
+Giữ schema linking → classification EASY/NON-NESTED/NESTED → generation → self-correction, stop sequences và token caps gốc. Transport dùng model/env `LLM_*`, retry hữu hạn. Debugger có thể trả nguyên SELECT với model mới; adapter chỉ thêm prefix nếu output chưa có, vẫn giữ raw response.
 
-## Audit: fill after reading the cloned code
-| Question | Verified answer |
-|---|---|
-| Upstream commit | TODO |
-| Python/dependency requirements | TODO |
-| Inference entry script / notebook + exact command | TODO |
-| API key location (`file:line`) | TODO |
-| Model name location (`file:line`) | TODO |
-| OpenAI SDK/API call (`file:line`) | TODO |
-| Prompt templates and pipeline stages (`file:line`) | TODO |
-| Spider input and prediction output format | TODO |
-| Minimal patch + patch file | TODO |
-| Tested 1 / 10 / 100+ examples | TODO |
+Environment: `third_party/Few-shot-NL2SQL-with-prompting/.venv`, Python 3.11.16; snapshot `configs/environments/din-requirements.txt`. Chỉ cài inference dependencies, không cài stack training đầy đủ. Cả ba nhánh đã test offline; real provider fixture chạy đủ bốn calls, SQL hợp lệ và evaluator đúng 1/1.
 
-## Search likely integration points
-```bash
-grep -RInE 'OPENAI_API_KEY|api_key|ChatCompletion|Completion\.create|chat\.completions|model=|gpt-' third_party/Few-shot-NL2SQL-with-prompting --include='*.py' --include='*.ipynb' | head -100
-grep -RInE 'schema.link|classif|decompos|self.correct|correction|prediction' third_party/Few-shot-NL2SQL-with-prompting --include='*.py' --include='*.ipynb' | head -100
-```
+CLI: `third_party/Few-shot-NL2SQL-with-prompting/.venv/bin/python -m scripts.run_method --help`, chọn `--method din_sql`. [Runbook](../reproducibility.md) có lệnh đầy đủ và flags. Artifact thành công: `runs/fixture-v3-din`. Đã hoàn thành smoke 10 Spider thật; xem [report](../../reports/spider_smoke.md). Main 100 đã hoàn thành, có kết quả trong benchmark report.
 
-## Expected run workflow
-1. Identify whether entry point is script or notebook; preserve original prompts/stages.
-2. Configure Spider file paths, model, API key and SDK compatibility.
-3. Run one question and record each intermediate stage plus final SQL.
-4. Run fixed 10, then 100–200 dev IDs; collect final SQL and failures.
-5. Normalize and evaluate with the shared Spider evaluator.
+Orchestration đổi sang runner chung để bỏ gold prints và retry vô hạn. Adapter kiểm tra câu đánh giá trùng chuỗi hardcoded demonstrations; chưa có full dev để hoàn tất kiểm tra toàn corpus.
 
-**Exact inference command:** TODO — verify in cloned repo first.
-
-## Reproduction fidelity checklist
-- [ ] No stage silently skipped for convenience.
-- [ ] Intermediate outputs are logged where possible.
-- [ ] Any changed model/prompt is documented.
-- [ ] Same model and dev IDs as other methods.
-
-## uv environment and Ruff rules
-
-Use `uv` instead of `pip`/`venv` for this upstream repository. Check its README and supported Python version before choosing `--python`. From the project root:
-
-```bash
-uv venv third_party/REPO_NAME/.venv --python 3.10
-uv pip install --python third_party/REPO_NAME/.venv/bin/python -r third_party/REPO_NAME/requirements.txt
-```
-
-**Replace `REPO_NAME` with the actual clone folder.** The requirements command is applicable only if the file exists; otherwise follow the verified upstream setup. Run upstream inference using that repository's `.venv/bin/python` and verified entry point. Do not run `ruff format` across cloned upstream source. Format team-owned adapters with `uv run ruff format scripts/` and lint with `uv run ruff check scripts/`.
+Parser hiện nhận Label quoted/plain hoặc một label Markdown duy nhất. NESTED thiếu subquestions dùng nguyên câu hỏi làm subproblem, vẫn chạy hard generation và correction; fallback được log. Đây là adaptation được công bố, không thêm gold hay bỏ stage. Smoke v3 đã đủ 10/10 SQL outputs, TSA 8/10. Kết quả main tại [benchmark report](../../reports/benchmark_100.md).

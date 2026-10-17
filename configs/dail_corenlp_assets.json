@@ -1,0 +1,126 @@
+{
+  "version": "3.9.2",
+  "source": "Maven Central",
+  "jars": [
+    {
+      "file": "stanford-corenlp-3.9.2.jar",
+      "url": "https://repo.maven.apache.org/maven2/edu/stanford/nlp/stanford-corenlp/3.9.2/stanford-corenlp-3.9.2.jar",
+      "bytes": 8146873,
+      "sha256": "5479ce9fa163230477436771045930f0cf47b891d5e1dbb2525455c3748ffa35"
+    },
+    {
+      "file": "stanford-corenlp-3.9.2-models.jar",
+      "url": "https://repo.maven.apache.org/maven2/edu/stanford/nlp/stanford-corenlp/3.9.2/stanford-corenlp-3.9.2-models.jar",
+      "bytes": 362565193,
+      "sha256": "5997eeebfd631f9eb779c1d4246ac5fcf09298ffbf6db5e00c0f1b80dc34ba10"
+    },
+    {
+      "file": "AppleJavaExtensions-1.4.jar",
+      "url": "https://repo.maven.apache.org/maven2/com/apple/AppleJavaExtensions/1.4/AppleJavaExtensions-1.4.jar",
+      "bytes": 11719,
+      "sha256": "5c46876715c80a166849efe7f2de54aaacafc9f33eb33732a0b6dfc6552cb0c2"
+    },
+    {
+      "file": "jollyday-0.4.9.jar",
+      "url": "https://repo.maven.apache.org/maven2/de/jollyday/jollyday/0.4.9/jollyday-0.4.9.jar",
+      "bytes": 213591,
+      "sha256": "556a1a11275d1d1df094b127a3e158377c0026ad150c0e651c9c46c533027e48"
+    },
+    {
+      "file": "commons-lang3-3.3.1.jar",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.3.1/commons-lang3-3.3.1.jar",
+      "bytes": 412693,
+      "sha256": "c165adae5a49167cba8af557b399d268f0d5099433559eac903c275bd9545fd2"
+    },
+    {
+      "file": "lucene-queryparser-4.10.3.jar",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-queryparser/4.10.3/lucene-queryparser-4.10.3.jar",
+      "bytes": 391514,
+      "sha256": "368acf713b7fa91a3bf256da5fa1fae6b1a483bb31fcf54553749b3fba7eda2e"
+    },
+    {
+      "file": "lucene-analyzers-common-4.10.3.jar",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-analyzers-common/4.10.3/lucene-analyzers-common-4.10.3.jar",
+      "bytes": 1699874,
+      "sha256": "a6ee90c7d3a7fe46b63ed0cfbb940d13538ae0cec2fa4b486edfa738a4b3d0e7"
+    },
+    {
+      "file": "lucene-queries-4.10.3.jar",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-queries/4.10.3/lucene-queries-4.10.3.jar",
+      "bytes": 213026,
+      "sha256": "744cf4e678e2bd29f9d59114011958b0282930b6c582c16f27e6c9033d117e74"
+    },
+    {
+      "file": "lucene-core-4.10.3.jar",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/4.10.3/lucene-core-4.10.3.jar",
+      "bytes": 2562626,
+      "sha256": "929a7e5c5628d772507834fe8f1c5463f0617a2cf3dd988dcdddf8295dd28e9a"
+    },
+    {
+      "file": "javax.servlet-api-3.0.1.jar",
+      "url": "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.0.1/javax.servlet-api-3.0.1.jar",
+      "bytes": 85353,
+      "sha256": "377d8bde87ac6bc7f83f27df8e02456d5870bb78c832dac656ceacc28b016e56"
+    },
+    {
+      "file": "xom-1.2.10.jar",
+      "url": "https://repo.maven.apache.org/maven2/com/io7m/xom/xom/1.2.10/xom-1.2.10.jar",
+      "bytes": 313253,
+      "sha256": "35134150151dc4d3295c7a617fcce35b1b9537cca92179f48bf97655bae6782f"
+    },
+    {
+      "file": "joda-time-2.9.4.jar",
+      "url": "https://repo.maven.apache.org/maven2/joda-time/joda-time/2.9.4/joda-time-2.9.4.jar",
+      "bytes": 629506,
+      "sha256": "deef06d5ead0b3f940bf6fd8aba4aea0d5857213a199874d1f7a8e6a6538d133"
+    },
+    {
+      "file": "ejml-0.23.jar",
+      "url": "https://repo.maven.apache.org/maven2/com/googlecode/efficient-java-matrix-library/ejml/0.23/ejml-0.23.jar",
+      "bytes": 301506,
+      "sha256": "12d44e81fdd661ad2aac6384511facf3d8fa003c3ce8d9cec5f22827d1819a26"
+    },
+    {
+      "file": "javax.json-1.0.4.jar",
+      "url": "https://repo.maven.apache.org/maven2/org/glassfish/javax.json/1.0.4/javax.json-1.0.4.jar",
+      "bytes": 85147,
+      "sha256": "0e1dec40a1ede965941251eda968aeee052cc4f50378bc316cc48e8159bdbeb4"
+    },
+    {
+      "file": "slf4j-api-1.7.12.jar",
+      "url": "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/1.7.12/slf4j-api-1.7.12.jar",
+      "bytes": 32127,
+      "sha256": "0aee9a77a4940d72932b0d0d9557793f872e66a03f598e473f45e7efecdccf99"
+    },
+    {
+      "file": "protobuf-java-3.2.0.jar",
+      "url": "https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-java/3.2.0/protobuf-java-3.2.0.jar",
+      "bytes": 1347123,
+      "sha256": "b1c2d420d2833429d11e405a58251e13bd7e3f22c266b49227c41e4d21361286"
+    },
+    {
+      "file": "javax.activation-api-1.2.0.jar",
+      "url": "https://repo.maven.apache.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0.jar",
+      "bytes": 56674,
+      "sha256": "43fdef0b5b6ceb31b0424b208b930c74ab58fac2ceeb7b3f6fd3aeb8b5ca4393"
+    },
+    {
+      "file": "jaxb-api-2.4.0-b180830.0359.jar",
+      "url": "https://repo.maven.apache.org/maven2/javax/xml/bind/jaxb-api/2.4.0-b180830.0359/jaxb-api-2.4.0-b180830.0359.jar",
+      "bytes": 128032,
+      "sha256": "56b9e9702753763007435162ea788055efcfefc86ab920f032c0411dc547b836"
+    },
+    {
+      "file": "jaxb-core-2.3.0.1.jar",
+      "url": "https://repo.maven.apache.org/maven2/com/sun/xml/bind/jaxb-core/2.3.0.1/jaxb-core-2.3.0.1.jar",
+      "bytes": 254858,
+      "sha256": "d2ecba63615f317a11fb55c6468f6a9480f6411c10951d9881bafd9a9a8d0467"
+    },
+    {
+      "file": "jaxb-impl-2.4.0-b180830.0438.jar",
+      "url": "https://repo.maven.apache.org/maven2/com/sun/xml/bind/jaxb-impl/2.4.0-b180830.0438/jaxb-impl-2.4.0-b180830.0438.jar",
+      "bytes": 1099271,
+      "sha256": "4e4e4876368f5e1d088839a4ac37cfd419b6d1792518919116650a61a99f6a7a"
+    }
+  ]
+}

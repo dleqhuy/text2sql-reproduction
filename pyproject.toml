@@ -2,18 +2,26 @@
 name = "text2sql-clone-first"
 version = "0.1.0"
 description = "Spider reproduction orchestration and evaluation helpers"
-requires-python = ">=3.10"
-dependencies = []
+requires-python = ">=3.11"
+dependencies = ["openai>=1.60,<3", "python-dotenv>=1,<2", "nltk>=3.9,<4", "sqlparse>=0.5,<1"]
+
+[project.optional-dependencies]
+din = ["pandas>=2,<3"]
+mac = ["pandas>=2,<3", "tiktoken>=0.7,<1", "func-timeout>=4.3,<5"]
 
 [dependency-groups]
-dev = ["ruff>=0.9,<1"]
+dev = ["ruff>=0.9,<1", "pytest>=8,<10"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
 
 [tool.uv]
 package = false
 
 [tool.ruff]
 line-length = 100
-target-version = "py310"
+target-version = "py311"
 include = ["*.py", "*.pyi", "pyproject.toml"]
 exclude = [".venv", "third_party", "data", "runs"]
 

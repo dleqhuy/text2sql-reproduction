@@ -1,8 +1,11 @@
-# Text-to-SQL Reproduction — Clone-first Plan
+# Text-to-SQL Reproduction — Clone-first Implementation
 
 > **Goal:** Reproduce the inference pipelines of **Vanilla, DAIL-SQL, DIN-SQL, and MAC-SQL** by running/adapting the authors' public code on **Spider 1.0**, using a common OpenAI API model. **No model training.**
 >
-> **Status:** implementation plan, **not** a claim that the repos or commands have been verified to run. Repo-specific script names, CLI flags, supported models, and compatibility must be confirmed after cloning.
+> **Status (2026-10-17):** inference runtime, all four method adapters, real DAIL preprocessing/MPNet retrieval, normalization, and official Test Suite evaluation are implemented. Spider train/dev and 166 original DBs are verified; the frozen experiment uses 100 dev questions across 20 DBs, with 695 official original/generated suite databases. All four methods passed the same 10-question smoke workflow.
+>
+> Results: [100-question benchmark](reports/benchmark_100.md). Reproduction commands: [runbook](docs/reproducibility.md). [Implementation status](docs/implementation/status.md), [audit](docs/repo_audit.md), and [initial plan](docs/implementation/README.md). These are adapted code-based subset experiments with a common configured model, not original-paper or full-dev scores. No per-run source snapshot/diff feature was added.
+
 
 ## 1. Deliverables
 
@@ -71,10 +74,10 @@ Install `uv` and run `uv sync` at the project root. The root `pyproject.toml` pi
 uv sync
 uv run ruff format scripts/
 uv run ruff check scripts/
-uv run python scripts/prepare_spider.py --help  # only after this script is implemented
+uv run python -m scripts.prepare_spider --help
 ```
 
-The `scripts/` commands above describe the intended project workflow, **not** proof that those scripts have been implemented or tested.
+Use module invocation (`python -m scripts.<command>`) so imports resolve consistently. Current verified commands and remaining dataset prerequisites are in [docs/reproducibility.md](docs/reproducibility.md).
 
 ## 4. Phase 0 — Freeze the experiment before touching method code
 
@@ -146,8 +149,9 @@ Do not assume that `OPENAI_API_KEY` alone is sufficient: some research repos use
 Create `.env` locally (never commit it):
 
 ```dotenv
-OPENAI_API_KEY=your_key_here
-OPENAI_MODEL=your_supported_model_id
+LLM_BASE_URL=https://your-provider.example/v1
+LLM_API_KEY=your_key_here
+LLM_MODEL=your_supported_model_id
 ```
 
 Use a safe loader in a **thin adapter or the minimal patch**:
@@ -157,8 +161,9 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-api_key = os.environ["OPENAI_API_KEY"]
-model = os.environ["OPENAI_MODEL"]
+api_key = os.environ["LLM_API_KEY"]
+base_url = os.environ["LLM_BASE_URL"]
+model = os.environ["LLM_MODEL"]
 ```
 
 **Important:** The snippet above only reads configuration; it does **not** automatically adapt older SDK calls to current ones. Determine compatibility from each repo's code and pinned dependencies. Do not replace a paper's prompt engineering or multi-agent logic as part of API migration. Record `git diff` as a patch and preserve original files/commit.
@@ -178,7 +183,7 @@ uv pip install --python third_party/DAIL-SQL/.venv/bin/python -r third_party/DAI
 # macOS/Linux example; Windows uses .venv/Scripts/python.exe
 ```
 
-Use `uv run python scripts/<name>.py` for **team-owned scripts**. To execute an upstream script, use that repo's own interpreter, e.g. `third_party/DAIL-SQL/.venv/bin/python <verified-upstream-entrypoint> ...` with the correct working directory. Never assume that the root uv environment can run all three repositories. If uv cannot resolve old upstream dependencies, document the issue and use `uv pip` with pinned compatible versions; do not silently upgrade the original pipeline.
+Use `uv run python -m scripts.<name>` from the project root for **team-owned scripts**. To execute an upstream script, use that repo's own interpreter, e.g. `third_party/DAIL-SQL/.venv/bin/python <verified-upstream-entrypoint> ...` with the correct working directory. Never assume that the root uv environment can run all three repositories. If uv cannot resolve old upstream dependencies, document the issue and use `uv pip` with pinned compatible versions; do not silently upgrade the original pipeline.
 
 **Ruff policy:** `uv run ruff format scripts/` and `uv run ruff check scripts/` for code written by the team. Do **not** autoformat `third_party/` or upstream code: it creates noisy diffs and makes reproduction harder to audit. For patched upstream files, keep the diff minimal and optionally run Ruff on specifically changed files only after review.
 

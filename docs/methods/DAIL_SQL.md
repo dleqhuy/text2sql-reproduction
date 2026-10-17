@@ -1,60 +1,13 @@
-# DAIL-SQL — Clone/Configure/Run Guide
+# DAIL-SQL — hai lượt inference bằng code gốc
 
-**Upstream:** https://github.com/BeachWang/DAIL-SQL  
-**Paper:** https://arxiv.org/abs/2308.15363
+Upstream commit `2061f68112222083134a0c9e2877961ff315ff44`, source [DAIL-SQL](https://github.com/BeachWang/DAIL-SQL). Variant SQL representation, QA demonstrations, 9-shot, preliminary EUCDISQUESTIONMASK → final EUCDISMASKPRESKLSIMTHR, n=1, không self-consistency.
 
-## Reproduction target
-Preserve the original demonstration-selection / prompt-organization strategy, then generate SQL with an OpenAI API model on the fixed Spider dev subset. Train split may supply few-shot examples; no model fine-tuning.
+Đã hoàn thành preprocessing cho 8.659 train + 1.034 dev bằng CoreNLP 3.9.2, dùng chính GloVe.tokenize/tokenize_for_copying (lemma=True) của source. Không cấp phát vectors GloVe không được component dùng. Cache hai mẫu LIKE literal giữ nguyên flags; SQL wildcard/quote và UTF-8 lỗi fallback SQLite. Đối chiếu cả 10 câu smoke thật với function SQLite gốc đều khớp.
 
-## Clone
-```bash
-git clone https://github.com/BeachWang/DAIL-SQL third_party/DAIL-SQL
-git -C third_party/DAIL-SQL rev-parse HEAD
-```
+MPNet thật: all-mpnet-base-v2 revision `e8c3b32edf5434bc2275fc9bab85f82640a19130`, CPU inference, không training. Candidate vectors cache theo hash model/revision/texts, không đổi thuật toán retrieval. Factory/selectors và prompts gốc được giữ; source target không có dev gold, diagnostic gold-based quality bị tắt, train corpus/overlap/assets được kiểm tra.
 
-## Audit: fill after reading the cloned code
-| Question | Verified answer |
-|---|---|
-| Upstream commit | TODO |
-| Python/dependency requirements | TODO |
-| Inference entry script + exact CLI | TODO |
-| API key location (`file:line`) | TODO |
-| Model name location (`file:line`) | TODO |
-| OpenAI SDK/API call (`file:line`) | TODO |
-| Spider preprocessing/embedding dependencies | TODO |
-| Input and output format | TODO |
-| Minimal patch + patch file | TODO |
-| Tested 1 / 10 / 100+ examples | TODO |
+Đã chạy smoke đầy đủ hai lượt: 10/10 outputs, TSA 8/10 với official generated databases. Runs `spider-v1-smoke-dail-preliminary`, `...-final`, aggregate `spider-v1-smoke-dail`. Main-100 đã hoàn thành cả hai lượt: TSA 76/100, DB gốc 87/100, tổng 200 API requests. Kết quả toàn bộ tại [benchmark report](../../reports/benchmark_100.md).
 
-## Search likely integration points
-```bash
-grep -RInE 'OPENAI_API_KEY|api_key|ChatCompletion|Completion\.create|chat\.completions|model=|gpt-' third_party/DAIL-SQL --include='*.py' --include='*.sh' | head -100
-grep -RInE 'argparse|__main__|spider|dev.json|train_spider|prediction|output' third_party/DAIL-SQL --include='*.py' --include='*.sh' | head -100
-```
+`prepare_dail_assets` tạo linking; `prepare_dail` tạo prompts từ pinned embedding config; `run_method --method dail_sql --dail-prompts <bundle>` inference; `aggregate_dail` cộng calls/usage/latency của cả hai lượt, giữ SQL final. [Runbook](../reproducibility.md) có commands và asset sources. Snapshot environment ở configs/environments/dail-requirements.txt, Maven jars/checksums ở configs/dail_corenlp_assets.json.
 
-## Expected run workflow
-1. Install upstream dependencies in an isolated environment.
-2. Run required Spider preprocessing and demonstration retrieval setup as instructed upstream.
-3. Locate and configure OpenAI key/model; migrate SDK calls only if required.
-4. Test one dev question; inspect selected examples and final SQL.
-5. Run fixed 10 and then fixed 100–200 Spider dev examples.
-6. Convert output to common JSONL; evaluate with shared Spider evaluator.
-
-**Exact inference command:** TODO — must be copied from verified upstream README/source, not guessed.
-
-## Reproduction fidelity checklist
-- [ ] Few-shot examples do not come from Spider dev gold SQL.
-- [ ] Original demonstration selection is preserved or deviations explicitly named.
-- [ ] Same model and dev IDs as other methods.
-- [ ] API usage, latency and failure rows recorded.
-
-## uv environment and Ruff rules
-
-Use `uv` instead of `pip`/`venv` for this upstream repository. Check its README and supported Python version before choosing `--python`. From the project root:
-
-```bash
-uv venv third_party/REPO_NAME/.venv --python 3.10
-uv pip install --python third_party/REPO_NAME/.venv/bin/python -r third_party/REPO_NAME/requirements.txt
-```
-
-**Replace `REPO_NAME` with the actual clone folder.** The requirements command is applicable only if the file exists; otherwise follow the verified upstream setup. Run upstream inference using that repository's `.venv/bin/python` and verified entry point. Do not run `ruff format` across cloned upstream source. Format team-owned adapters with `uv run ruff format scripts/` and lint with `uv run ruff check scripts/`.
+Giới hạn giữ nguyên: get_tokenizer/count_tokens của upstream trả 0 nên không dùng diagnostics đó làm token measurement/context enforcement. Generation cap 200 mỗi call, usage lấy provider. Latency aggregate chưa gồm offline linking/retrieval setup. Đây là adapted reproduction, không phải điểm GPT-4 lịch sử.

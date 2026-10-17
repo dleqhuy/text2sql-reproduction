@@ -1,0 +1,15 @@
+{
+  "original_sqlite_vs_indexed_cache": [
+    "dev_000272",
+    "dev_000305",
+    "dev_000487",
+    "dev_000545",
+    "dev_000664",
+    "dev_000787",
+    "dev_000880",
+    "dev_000940",
+    "dev_001010",
+    "dev_001033"
+  ],
+  "all_equal": true
+}

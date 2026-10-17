@@ -179,3 +179,16 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+# Local research artifacts and downloaded upstream checkouts
+.DS_Store
+.uv-cache/
+third_party/
+data/spider/
+data/prepared/
+data/nltk_data/
+data/assets/
+data/test-suite/
+runs/
+*.sqlite
+*.sqlite3
