@@ -5,8 +5,12 @@ from types import SimpleNamespace
 import nltk
 import pytest
 
-from scripts.common.cell_link_cache import CellLinkConnection
 from scripts.common.io import ROOT
+from tests.fork_modules import load_fork_module
+
+CellLinkConnection = load_fork_module(
+    "DAIL-SQL", "reproduction_cell_link_cache.py"
+).CellLinkConnection
 
 
 @pytest.mark.skipif(

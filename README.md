@@ -37,7 +37,7 @@ Benchmark này được chạy trước migration sang forks/submodules. [Histor
 
 - `scripts/`, `tests/`: orchestration, evaluation và kiểm tra chung.
 - `third_party/`: ba method forks và hai evaluator submodules.
-- `configs/`, `data/splits/`: cấu hình, dependency snapshots và fixed dataset manifest.
+- `configs/`, `data/splits/`: cấu hình, nguồn/hash dữ liệu và fixed dataset manifest. Dependency locks của methods nằm trong từng fork.
 - `experiments/`: prepared manifests và tham chiếu benchmark cũ.
 - `docs/`, `reports/`: hướng dẫn và kết quả.
 - `data/spider/`, `data/assets/`, `data/prepared/`, `data/test-suite/`, `runs/`: dữ liệu/artifacts local, Git ignore.

@@ -12,11 +12,11 @@ from scripts.common.experiment import validate_run
 from scripts.common.fork_cli import run_method as run_fork
 from scripts.common.io import ROOT, db_path, digest, file_hash, read_json, read_jsonl, write_json
 from scripts.common.llm import LLM, BudgetExceeded, ProviderFailure
-from scripts.common.methods import Vanilla
 from scripts.common.provenance import code_provenance
 from scripts.common.run_store import RunStore
 from scripts.common.schema import load_schemas
 from scripts.common.sources import verify_source
+from scripts.common.vanilla import Vanilla
 
 REPOS = {"din_sql": "Few-shot-NL2SQL-with-prompting", "mac_sql": "MAC-SQL", "dail_sql": "DAIL-SQL"}
 

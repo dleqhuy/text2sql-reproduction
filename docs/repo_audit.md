@@ -39,7 +39,7 @@ Parser nhận plain SQL hoặc SQL fence cuối, từ chối error sentinel. Met
 
 Primary metric dùng upstream `taoyds/test-suite-sql-eval`, baseline `e97acc546ecbee8fa27fa8dbf025ef61493a876c`; gọi comparison function gốc với read-only connection/deadline. Single-original-DB execution là metric riêng. Spider legacy baseline `b7b5b8c890cd30e35427348bb9eb8c6d1350ca7c` dùng cho reference/hardness; parser legacy có hạn chế backticks.
 
-Root dùng `uv.lock`; từng method có env riêng theo `configs/environments/*-requirements.txt`. DIN/MAC chỉ cần inference dependencies; DAIL constraints ở `configs/dail_constraints.txt`. [Runbook](reproducibility.md) chứa commands; [protocol](experiment_protocol.md) định nghĩa so sánh; [benchmark](../reports/benchmark_100.md) ghi kết quả trước migration.
+Root dùng `uv.lock`; từng fork giữ `requirements-compatible.lock.txt` cho môi trường của mình. DIN/MAC chỉ cần inference dependencies; DAIL lock bao gồm retrieval/preprocessing dependencies. [Runbook](reproducibility.md) chứa commands; [protocol](experiment_protocol.md) định nghĩa so sánh; [benchmark](../reports/benchmark_100.md) ghi kết quả trước migration.
 
 ## License đã kiểm tra
 

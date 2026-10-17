@@ -1,9 +1,6 @@
 """Submodule gitlinks are the only authority for executable source revisions."""
 
-import importlib.util
 import subprocess
-import sys
-from functools import lru_cache
 from pathlib import Path
 
 from scripts.common.io import ROOT, read_json
@@ -71,21 +68,3 @@ def verify_source(name, root=ROOT, path=None, strict=False):
         capture_output=True,
     )
     return info
-
-
-@lru_cache
-def load_integration(name, filename="reproduction_adapter.py", repo=None):
-    """Load a fork entry point without importing its legacy CLI entry point."""
-    path = Path(repo) if repo else source_path(name)
-    module_name = f"text2sql_fork_{name}_{Path(filename).stem}"
-    spec = importlib.util.spec_from_file_location(module_name, path / filename)
-    if spec is None or spec.loader is None:
-        raise ImportError(f"No integration entry point for {name}")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[module_name] = module
-    try:
-        spec.loader.exec_module(module)
-    except BaseException:
-        sys.modules.pop(module_name, None)
-        raise
-    return module

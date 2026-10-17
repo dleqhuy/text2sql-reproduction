@@ -1,7 +1,6 @@
-"""Thin adapters that load original method prompts/classes from pinned checkouts."""
+"""Parent-owned Vanilla baseline; research methods run through fork CLIs."""
 
 from scripts.common.schema import extract_sql, serialize
-from scripts.common.sources import load_integration
 
 VANILLA_PROMPT = """Write one SQLite query answering the question using this schema.
 Return only the SQL query. Do not include explanations.
@@ -10,14 +9,6 @@ Return only the SQL query. Do not include explanations.
 
 Question: {question}
 """
-
-
-def parse_din_classification(text, question):
-    return load_integration("din_sql").parse_din_classification(text, question)
-
-
-def parse_mac_sql(text):
-    return load_integration("mac_sql").parse_mac_sql(text, extract_sql)
 
 
 class Vanilla:

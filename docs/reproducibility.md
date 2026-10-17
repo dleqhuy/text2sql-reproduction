@@ -16,11 +16,11 @@ uv run python -m scripts.bootstrap_upstream
 uv run python -m nltk.downloader -q -d data/nltk_data punkt_tab stopwords wordnet punkt
 ```
 
-Bootstrap kiểm tra gitlinks của cả ba method, legacy Spider và official test-suite evaluator. `configs/upstream_lock.json` giữ metadata upstream/baseline; executable commit chỉ lấy từ submodules. Môi trường inference riêng được pin trong `configs/environments/*-requirements.txt`. Ví dụ dựng DIN (MAC/DAIL tương tự, thay path và snapshot):
+Bootstrap kiểm tra gitlinks của cả ba method, legacy Spider và official test-suite evaluator. `configs/upstream_lock.json` giữ metadata upstream/baseline; executable commit chỉ lấy từ submodules. Môi trường inference được pin bằng `requirements-compatible.lock.txt` trong từng fork. Ví dụ dựng DIN (MAC/DAIL tương tự, thay path):
 
 ```bash
 UV_CACHE_DIR=.uv-cache uv venv third_party/Few-shot-NL2SQL-with-prompting/.venv --python 3.11
-UV_CACHE_DIR=.uv-cache uv pip install --python third_party/Few-shot-NL2SQL-with-prompting/.venv/bin/python -r configs/environments/din-requirements.txt
+UV_CACHE_DIR=.uv-cache uv pip install --python third_party/Few-shot-NL2SQL-with-prompting/.venv/bin/python -r third_party/Few-shot-NL2SQL-with-prompting/requirements-compatible.lock.txt
 ```
 
 Không tạo lại venv đang sử dụng. Root `uv.lock` bao gồm sqlparse cho official execution evaluator. `scripts.check_provider` gửi một request nhỏ thật; probe và benchmark đã chạy với provider hiện có, không cần probe lặp lại mỗi câu.
@@ -39,7 +39,7 @@ Manifest có bản theo dõi ở `data/splits/spider-v1.json`. Main chứa 100 c
 
 ## DAIL assets và hai lượt retrieval
 
-CoreNLP 3.9.2 jars từ Maven Central cùng dependency/version/checksum ở `configs/dail_corenlp_assets.json`. Java 11 được đặt local dưới `data/assets/`, không cài vào hệ thống. MPNet model/revision/path ở `configs/dail_embedding.json` (`all-mpnet-base-v2`, revision `e8c3b32edf5434bc2275fc9bab85f82640a19130`). Snapshot HF chỉ cần JSON/TXT và `pytorch_model.bin`, không cần ONNX/TF weights.
+CoreNLP 3.9.2 jars từ Maven Central cùng dependency/version/checksum ở `third_party/DAIL-SQL/reproduction/corenlp_assets.json`. Java 11 được đặt local dưới `data/assets/`, không cài vào hệ thống. MPNet model/revision/path ở `configs/dail_embedding.json` (`all-mpnet-base-v2`, revision `e8c3b32edf5434bc2275fc9bab85f82640a19130`). Snapshot HF chỉ cần JSON/TXT và `pytorch_model.bin`, không cần ONNX/TF weights.
 
 Ví dụ khởi động server đã dùng:
 

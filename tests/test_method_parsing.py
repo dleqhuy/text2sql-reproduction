@@ -1,6 +1,15 @@
 import pytest
 
-from scripts.common.methods import parse_din_classification, parse_mac_sql
+from scripts.common.schema import extract_sql
+from tests.fork_modules import load_fork_module
+
+parse_din_classification = load_fork_module(
+    "Few-shot-NL2SQL-with-prompting"
+).parse_din_classification
+
+
+def parse_mac_sql(text):
+    return load_fork_module("MAC-SQL").parse_mac_sql(text, extract_sql)
 
 
 def test_nested_classification_without_subquestions():
