@@ -19,7 +19,7 @@ cp -n .env.example .env
 Điền `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL` trong `.env`. Theo [running](docs/running.md) để dựng environments/dữ liệu, rồi chạy với manifest đã chuẩn bị cho revision hiện tại:
 
 ```bash
-uv run python -m scripts.benchmark --experiment-manifest experiments/manifests/main-v2.json --run-dir runs/my-benchmark
+uv run python -m scripts.benchmark --experiment-manifest experiments/manifests/main-v3.json --run-dir runs/my-benchmark
 ```
 
 ## Tài liệu
@@ -44,6 +44,7 @@ uv run python -m scripts.benchmark --experiment-manifest experiments/manifests/m
 ## Cấu trúc
 
 - `scripts/`, `tests/`: điều phối, chấm điểm và kiểm thử.
+- `runtime/`: nguồn chuẩn để đồng bộ infrastructure chung vào ba fork.
 - `third_party/`: ba method forks và hai evaluator, ghim bằng Git submodules.
 - `configs/`, `data/splits/`, `experiments/`: cấu hình, data hashes và experiment records.
 - `docs/`, `reports/`: hướng dẫn và kết quả.

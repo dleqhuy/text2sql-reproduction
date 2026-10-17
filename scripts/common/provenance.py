@@ -19,6 +19,8 @@ def git_info(path):
 
 def code_provenance():
     files = [*sorted((ROOT / "scripts").rglob("*.py")), ROOT / "pyproject.toml"]
+    files.extend(sorted((ROOT / "runtime").rglob("*.py")))
+    files.extend(sorted((ROOT / "runtime").rglob("*.json")))
     if (ROOT / "uv.lock").exists():
         files.append(ROOT / "uv.lock")
     return {

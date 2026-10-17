@@ -6,7 +6,7 @@ from pathlib import Path
 from scripts.common.io import ROOT, digest, file_hash, read_json
 from scripts.common.sources import git, gitlink, source_path, source_url, verify_source
 
-RUNTIME_PATHS = ("scripts", "configs", "pyproject.toml", "uv.lock", ".gitmodules")
+RUNTIME_PATHS = ("scripts", "runtime", "configs", "pyproject.toml", "uv.lock", ".gitmodules")
 
 
 def clean_repository(root):

@@ -19,7 +19,7 @@ Submodule checkout thường detached HEAD. Trước khi sửa, tạo branch tro
 ```bash
 git -C third_party/MAC-SQL switch -c codex/my-method-change
 # Sửa và test source trong fork.
-git -C third_party/MAC-SQL add reproduction_adapter.py
+git -C third_party/MAC-SQL add reproduction/method.py
 git -C third_party/MAC-SQL commit -m "Describe the method change"
 git -C third_party/MAC-SQL push -u origin codex/my-method-change
 git add third_party/MAC-SQL
@@ -37,6 +37,21 @@ git -C third_party/MAC-SQL diff 31a9df5e0d520be4769be57a4b9022e5e34a14f4 HEAD
 ```
 
 Parent diff cho biết method đổi từ commit nào sang commit nào; fork diff chỉ rõ source đã chỉnh. Đây là Git history bình thường, không có source snapshot/diff tạo thêm cho mỗi run.
+
+## Bố trí code và runtime chung
+
+CLI `scripts/benchmark.py` chỉ nhận flags. `scripts/common/benchmark_plan.py` lập thứ tự các bước, `benchmark_pipeline.py` kiểm tra và chạy/resume, `benchmark_report.py` tổng hợp metrics.
+
+Trong mỗi fork, `reproduction/method.py` chứa integration của method; source prompts/agents/selectors gốc giữ ở vị trí upstream. DAIL thêm `linking.py`, `cell_link_cache.py` và `retrieval.py` cho preprocessing/retrieval.
+
+`runtime/` là nguồn chuẩn cho client, config, contracts, checkpoint, SQL guard và runner dùng chung ở ba fork. Chỉ sửa các file này trong `runtime/`, rồi:
+
+```bash
+uv run python -m scripts.sync_runtime --write
+uv run python -m scripts.sync_runtime
+```
+
+Lệnh mặc định chỉ kiểm tra drift; `--write` từ chối ghi đè file runtime có local edits khác bản chuẩn. Review/test/commit từng fork và push trước parent. Các bản copy được commit trong fork, nên clone fork vẫn chạy độc lập mà không import hoặc cài thêm repo chính. Chi tiết danh sách file ở [runtime](../runtime/README.md).
 
 ## Experiment manifests
 
@@ -137,8 +152,8 @@ Normalizer join theo ID; thiếu output thành `missing_prediction`, thừa/trù
 ## Kiểm tra và fixture
 
 ```bash
-uv run ruff format --check scripts tests
-uv run ruff check scripts tests
+uv run ruff format --check scripts tests runtime
+uv run ruff check scripts tests runtime
 uv run pytest -q
 # Dataset giả cho kiểm tra thủ công; không phải dữ liệu benchmark:
 uv run python -m tests.create_fixture --output data/prepared/fixture

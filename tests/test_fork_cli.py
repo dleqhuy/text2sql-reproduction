@@ -62,19 +62,13 @@ def test_standalone_runtimes_are_consistent_and_do_not_import_parent():
         ROOT / "third_party" / name
         for name in ("Few-shot-NL2SQL-with-prompting", "MAC-SQL", "DAIL-SQL")
     ]
-    for module in (
-        "io",
-        "contracts",
-        "llm",
-        "config",
-        "run_store",
-        "sqlite_guard",
-        "schema",
-        "provenance",
-        "run",
-    ):
-        copies = [(fork / "reproduction" / f"{module}.py").read_text() for fork in forks]
-        assert len(set(copies)) == 1, f"Shared runtime drift: {module}"
+    canonical = ROOT / "runtime"
+    for path in canonical.rglob("*"):
+        if path.suffix not in {".py", ".json"}:
+            continue
+        relative = path.relative_to(canonical)
+        for fork in forks:
+            assert (fork / relative).read_bytes() == path.read_bytes(), f"Runtime drift: {relative}"
     for fork in forks:
         for path in (fork / "reproduction").rglob("*.py"):
             assert not re.search(

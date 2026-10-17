@@ -8,7 +8,7 @@ import pytest
 from scripts.common.io import ROOT
 
 
-def load_fork_module(folder, filename="reproduction_adapter.py"):
+def load_fork_module(folder, filename="reproduction/method.py"):
     path = ROOT / "third_party" / folder / filename
     if not path.is_file():
         pytest.skip("Initialize fork submodules first", allow_module_level=True)

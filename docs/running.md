@@ -51,10 +51,10 @@ CLI benchmark tạo lại prompt bundles và retrieval; không chạy lại link
 
 ## Một lệnh chạy cả bốn method
 
-Revision hiện tại có manifest `experiments/manifests/main-v2.json` đã chuẩn bị, chưa chạy inference. Khi đổi source/config/model/data, tạo và commit manifest mới theo [development](development.md#experiment-manifests). Chạy benchmark:
+Revision hiện tại có manifest `experiments/manifests/main-v3.json` đã chuẩn bị, chưa chạy inference. Khi đổi source/config/model/data, tạo và commit manifest mới theo [development](development.md#experiment-manifests). Chạy benchmark:
 
 ```bash
-uv run python -m scripts.benchmark --experiment-manifest experiments/manifests/main-v2.json --run-dir runs/my-benchmark
+uv run python -m scripts.benchmark --experiment-manifest experiments/manifests/main-v3.json --run-dir runs/my-benchmark
 ```
 
 Input/config được đọc từ manifest, không phải nhập lại nhiều flags. Mặc định dùng `data/spider`, `data/test-suite`, `configs/dail_embedding.json`; đổi bằng `--dataset`, `--suite-db-root`, `--embedding-config` khi cần.
@@ -63,9 +63,9 @@ Pipeline tạo preliminary prompts, chạy Vanilla → DIN → MAC → DAIL prel
 
 ```bash
 # Chỉ in các bước, không gọi API hoặc ghi artifacts; chưa xác minh production preflight.
-uv run python -m scripts.benchmark --experiment-manifest experiments/manifests/main-v2.json --run-dir runs/my-benchmark --dry-run
+uv run python -m scripts.benchmark --experiment-manifest experiments/manifests/main-v3.json --run-dir runs/my-benchmark --dry-run
 # Tiếp tục pipeline bị ngắt; kiểm tra identity và hashes trước khi bỏ qua bước đã xong.
-uv run python -m scripts.benchmark --experiment-manifest experiments/manifests/main-v2.json --run-dir runs/my-benchmark --resume
+uv run python -m scripts.benchmark --experiment-manifest experiments/manifests/main-v3.json --run-dir runs/my-benchmark --resume
 ```
 
 Production yêu cầu source sạch, model/config/data/source pins khớp manifest và suites đúng hash. Đổi runtime thì tạo manifest/run-dir mới; manifest của benchmark đã hoàn tất chỉ tham chiếu revision lúc chạy. Resume không chạy lại các câu đã terminal, kể cả lỗi. Nếu DAIL preliminary có failures, final retrieval dừng; giữ experiment lỗi và dùng run mới để kiểm tra thay đổi.

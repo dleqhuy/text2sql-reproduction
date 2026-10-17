@@ -9,7 +9,7 @@ from scripts.common.io import ROOT
 from tests.fork_modules import load_fork_module
 
 CellLinkConnection = load_fork_module(
-    "DAIL-SQL", "reproduction_cell_link_cache.py"
+    "DAIL-SQL", "reproduction/cell_link_cache.py"
 ).CellLinkConnection
 
 

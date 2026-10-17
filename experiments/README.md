@@ -1,6 +1,6 @@
 # Experiment references
 
-- `manifests/main-v2.json`: cấu hình chuẩn bị cho CLI benchmark hiện tại, chưa chạy inference. Đây là manifest dùng trong quickstart.
+- `manifests/main-v3.json`: cấu hình chuẩn bị cho CLI benchmark hiện tại, chưa chạy inference. Đây là manifest dùng trong quickstart.
 - `manifests/native-main-100-20261017.json`: source, model, config và data references của benchmark đã hoàn tất, ứng với revision lúc chạy; giữ để trace kết quả.
 - `completed/native-main-100-20261017.json`: kết quả đã hoàn thành, report/metrics và hashes của local artifacts. Predictions, responses và evaluations nằm trong ignored `runs/` directories.
 

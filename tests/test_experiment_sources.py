@@ -37,7 +37,8 @@ def repository(tmp_path):
     init(source)
     (source / "original.py").write_text("# baseline\n")
     base = commit(source, "upstream baseline")
-    (source / "reproduction_adapter.py").write_text("# adapted entry point\n")
+    (source / "reproduction").mkdir()
+    (source / "reproduction/method.py").write_text("# adapted entry point\n")
     pinned = commit(source, "fork integration")
     (root / ".gitmodules").write_text(
         '[submodule "third_party/fixture"]\n'

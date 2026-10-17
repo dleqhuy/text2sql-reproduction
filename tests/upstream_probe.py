@@ -50,13 +50,13 @@ def main():
     folder = "Few-shot-NL2SQL-with-prompting" if args.method == "din" else "MAC-SQL"
     sys.path.insert(0, str(ROOT / "third_party" / folder))
     if args.method == "din":
-        from reproduction_adapter import DIN
+        from reproduction.method import DIN
 
         method = DIN(llm, ROOT / "third_party/Few-shot-NL2SQL-with-prompting", args.tables)
     else:
-        from reproduction_adapter import MAC
+        from reproduction.method import MAC
 
-        method = MAC(llm, ROOT / "third_party/MAC-SQL", args.tables, args.db_root, 2)
+        method = MAC(llm, args.tables, args.db_root, 2)
     sql = method.infer(
         {"example_id": "dev_000000", "db_id": "mini", "question": "How many people?"}
     )

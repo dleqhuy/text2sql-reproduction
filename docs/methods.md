@@ -15,7 +15,7 @@ Nguồn: [DAIL-SQL](https://github.com/BeachWang/DAIL-SQL); [fork integration](h
 
 Variant SQL representation, QA demonstrations, 9-shot, n=1, không self-consistency. Preliminary dùng `EUCDISQUESTIONMASK`; final dùng `EUCDISMASKPRESKLSIMTHR`. Giữ prompt factory/selectors gốc, chỉ train được dùng làm demonstration pool; tắt diagnostic quality cần dev gold.
 
-CoreNLP 3.9.2 và các tokenizer methods gốc với lemma=True tạo linking cho 8.659 train + 1.034 dev. Không cấp phát GloVe vectors vì preprocessing không dùng chúng. `reproduction_cell_link_cache.py` tăng tốc hai mẫu LIKE literal; wildcard/quote/UTF-8 lỗi fallback SQLite. Đối chiếu original functions và 10 smoke questions được ghi ở [cell-link validation](../configs/dail_cell_link_validation.json).
+CoreNLP 3.9.2 và các tokenizer methods gốc với lemma=True tạo linking cho 8.659 train + 1.034 dev. Không cấp phát GloVe vectors vì preprocessing không dùng chúng. `reproduction/cell_link_cache.py` tăng tốc hai mẫu LIKE literal; wildcard/quote/UTF-8 lỗi fallback SQLite. Đối chiếu original functions và 10 smoke questions được ghi ở [cell-link validation](../configs/dail_cell_link_validation.json).
 
 MPNet weights/revision ở [embedding config](../configs/dail_embedding.json). Cache candidate vectors theo model/revision/texts; không đổi selection strategy. `get_tokenizer/count_tokens` gốc trả 0 nên context-budget diagnostics không đáng tin; dùng provider usage và generation cap 200/call. Accounting cộng preliminary + final; latency chưa gồm linking/retrieval offline.
 

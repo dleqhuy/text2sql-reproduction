@@ -2,7 +2,9 @@ import subprocess
 
 import pytest
 
-from scripts.benchmark import Stage, execute, plan, report
+from scripts.common.benchmark_pipeline import execute
+from scripts.common.benchmark_plan import Stage, plan
+from scripts.common.benchmark_report import report
 from scripts.common.contracts import failure
 from scripts.common.io import ROOT, digest, file_hash, read_json, write_json, write_jsonl
 from scripts.summarize_results import summarize
