@@ -2,6 +2,8 @@
 
 Chạy từ root repo, Python 3.11.16/macOS arm64 đã kiểm chứng. Team scripts dùng `python -m scripts.<command>`. `.env` giữ `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL`; không đổi credential sang source upstream.
 
+Contracts input/output và artifact layout ở [contracts](contracts.md); adaptations từng method ở [audit](repo_audit.md).
+
 ## Source versioning và manifests
 
 Repo đã chuyển sang 3 forks + 5 submodules. [Workflow Git và experiment manifests](repository_workflow.md) mô tả clone, trace diff, cập nhật source pins và production runs. Các lệnh bên dưới vẫn dùng cho development; benchmark chính thức thêm `--production --experiment-manifest <path>` cho mỗi inference stage. Không dùng lại prompt bundle DAIL cũ khi fork commit thay đổi.
@@ -81,11 +83,11 @@ uv run python -m scripts.aggregate_dail --input data/prepared/spider-v1/main.jso
 
 Aggregator giữ SQL final, cộng API calls/tokens/latency của cả hai lượt; usage thiếu vẫn null. Latency này chưa gồm linking/retrieval offline. Không so sánh chi phí DAIL chỉ bằng một lượt final.
 
-Model/temp/config cố định trong `configs/experiment.json`; caps giữ stage settings (Vanilla/MAC 1024; DIN 600/350; DAIL 200). Raw prompts/responses ở events, mỗi ID có final row kể cả lỗi. Resume bỏ qua terminal rows, từ chối mismatch code/config/dependencies/model/data. Process chết trước checkpoint có thể gọi lại câu chưa terminal; không cam kết exactly-once billing. Run-dir chỉ một writer; root CLI dùng fcntl nên chưa hỗ trợ Windows.
+Model lấy từ `LLM_MODEL`; temperature và generation settings trong `configs/experiment.json`; caps giữ stage settings (Vanilla/MAC 1024; DIN 600/350; DAIL 200). Raw prompts/responses ở events, mỗi ID có final row kể cả lỗi. Resume bỏ qua terminal rows, từ chối mismatch code/config/dependencies/model/data. Process chết trước checkpoint có thể gọi lại câu chưa terminal; không cam kết exactly-once billing. Run-dir chỉ một writer; root CLI dùng fcntl nên chưa hỗ trợ Windows.
 
 ## Official Test Suite metric
 
-Code gốc: `third_party/test-suite-sql-eval`, commit pin trong upstream lock. Archive official [testsuitedatabases.zip](https://drive.google.com/file/d/1mkCx2GOFIqNesD4y8TDAO1yX1QZORP5w/view) đã tải; nguồn/hash ở `configs/test_suite_source.json`. Chỉ trích xuất 695 SQLite files cho 20 DB được chọn:
+Code gốc: `third_party/test-suite-sql-eval`, commit pin bằng submodule gitlink. Archive official [testsuitedatabases.zip](https://drive.google.com/file/d/1mkCx2GOFIqNesD4y8TDAO1yX1QZORP5w/view) đã tải; nguồn/hash ở `configs/test_suite_source.json`. Chỉ trích xuất 695 SQLite files cho 20 DB được chọn:
 
 ```bash
 uv run python -m scripts.prepare_test_suite --archive data/assets/testsuitedatabases.zip --manifest data/prepared/spider-v1/manifest.json --output data/test-suite
@@ -120,4 +122,4 @@ uv run ruff check scripts tests
 uv run pytest -q
 ```
 
-Tests không gọi provider thật; các original upstream tests chạy subprocess riêng và có prerequisites nguồn/NLTK/env. Suite tests bao phủ backticks, DISTINCT, neighbor database counterexample và write rejection. Parser tests bao phủ DIN thiếu subquestions/Label và MAC plain/fenced SQL. Không thêm snapshot/diff source vào mỗi run theo yêu cầu người dùng; giữ provenance hiện có.
+Tests không gọi provider thật; các original upstream tests chạy subprocess riêng và có prerequisites nguồn/NLTK/env. Suite tests bao phủ backticks, DISTINCT, neighbor database counterexample và write rejection. Parser tests bao phủ DIN thiếu subquestions/Label và MAC plain/fenced SQL. Phạm vi kiểm chứng và các giới hạn ở [verification status](implementation/status.md).

@@ -1,270 +1,42 @@
-# Text-to-SQL Reproduction — Clone-first Implementation
+# Text-to-SQL Reproduction
 
-> **Goal:** Reproduce the inference pipelines of **Vanilla, DAIL-SQL, DIN-SQL, and MAC-SQL** by running/adapting the authors' public code on **Spider 1.0**, using a common OpenAI API model. **No model training.**
->
-> **Status (2026-10-17):** inference runtime, all four method adapters, real DAIL preprocessing/MPNet retrieval, normalization, and official Test Suite evaluation are implemented. Spider train/dev and 166 original DBs are verified; the frozen experiment uses 100 dev questions across 20 DBs, with 695 official original/generated suite databases. All four methods passed the same 10-question smoke workflow.
->
-> Results: [100-question benchmark](reports/benchmark_100.md). Reproduction commands: [runbook](docs/reproducibility.md). [Implementation status](docs/implementation/status.md), [audit](docs/repo_audit.md), and [initial plan](docs/implementation/README.md). These are adapted code-based subset experiments with a common configured model, not original-paper or full-dev scores. No per-run source snapshot/diff feature was added.
+Chạy inference Vanilla, DAIL-SQL, DIN-SQL và MAC-SQL trên Spider 1.0 bằng cùng model OpenAI Compatible; không training. Repo chính quản lý runner/evaluation; ba method forks và hai evaluator được ghim bằng Git submodules.
 
-
-## 1. Deliverables
-
-**Repository workflow:** one private [main repository](https://github.com/dleqhuy/text2sql-reproduction), three method forks, five pinned Git submodules, and immutable experiment manifests. See [source versioning and experiment commands](docs/repository_workflow.md). Existing benchmark artifacts retain their original provenance; the migration does not rerun or relabel those results.
-
-**Implementation backlog:** [Kế hoạch chi tiết Phase 0–4](docs/implementation/README.md), based on the local repository audit dated 2026-10-17. The plan uses the existing `LLM_BASE_URL`, `LLM_API_KEY`, and `LLM_MODEL` configuration for an OpenAI-compatible provider; endpoint compatibility has been verified; these original planning sections are retained as context. The current workflow and status links above describe the implemented system.
-
-1. Method forks and upstream evaluators registered as submodules; adapted commits and upstream baselines documented.
-2. `docs/methods/*.md`: exact installation, API integration points, commands, inputs, outputs, and known issues **after code inspection**.
-3. A frozen subset of Spider dev (start with 10, then 100–200), with DB files and schema metadata.
-4. A per-method output JSONL containing generated SQL for **the same** Spider question IDs.
-5. Shared Spider evaluation, run logs, errors, API calls, tokens/cost if available, and comparison table.
-6. Final report explaining each method, modifications, reproducibility limits, and experimental results.
-
-## 2. Source repositories and method-specific guides
-
-| Method | Source | Paper | Local guide |
-|---|---|---|---|
-| Vanilla | Team-owned minimal baseline; no official paper repo | Baseline | [VANILLA.md](docs/methods/VANILLA.md) |
-| DAIL-SQL | https://github.com/BeachWang/DAIL-SQL | https://arxiv.org/abs/2308.15363 | [DAIL_SQL.md](docs/methods/DAIL_SQL.md) |
-| DIN-SQL | https://github.com/MohammadrezaPourreza/Few-shot-NL2SQL-with-prompting | https://arxiv.org/abs/2304.11015 | [DIN_SQL.md](docs/methods/DIN_SQL.md) |
-| MAC-SQL | https://github.com/wbbeyourself/MAC-SQL | https://arxiv.org/abs/2312.11242 | [MAC_SQL.md](docs/methods/MAC_SQL.md) |
-
-**Research distinction:** Vanilla is a baseline, not a fourth paper. DAIL-SQL selects/organizes demonstrations; DIN-SQL decomposes the task; MAC-SQL uses agent roles and refinement. These methods are representative historical approaches, not asserted to be current SOTA.
-
-## 3. Directory structure
-
-```text
-text2sql-reproduction/
-├── README.md
-├── .env.example
-├── .gitignore
-├── docs/
-│   ├── methods/
-│   │   ├── VANILLA.md
-│   │   ├── DAIL_SQL.md
-│   │   ├── DIN_SQL.md
-│   │   └── MAC_SQL.md
-│   ├── repo_audit.md             # exact code locations + patch notes
-│   └── experiment_protocol.md
-├── third_party/
-│   ├── DAIL-SQL/                 # method fork; gitlink pinned
-│   ├── Few-shot-NL2SQL-with-prompting/
-│   └── MAC-SQL/
-├── data/
-│   ├── spider/                   # Spider 1.0 files (not committed)
-│   └── splits/                   # fixed IDs/indices + selection seed
-├── scripts/
-│   ├── prepare_spider.py         # adapter: common subset -> each repo's expected input
-│   ├── run_vanilla.py            # only method written from scratch
-│   ├── normalize_outputs.py      # repo-specific outputs -> common JSONL
-│   ├── evaluate_spider.py        # invoke validated official Spider evaluator
-│   └── summarize_results.py
-├── experiments/                  # prepared manifests and historical run references
-├── runs/                         # predictions, stdout/stderr, metadata
-├── pyproject.toml                # uv + Ruff configuration for team-owned scripts
-├── uv.lock                       # generated by uv lock; commit after setup
-└── .python-version               # team tools Python version
-```
-
-**Do not install all upstream requirements into one Python environment by default.** Different repos may require incompatible OpenAI SDK, Python, LangChain or other dependencies. Use **uv** to manage dependencies and a separate `.venv` inside each upstream repo; use **Ruff** to format/lint only team-owned code by default. Source revisions are pinned by the five Git submodule gitlinks.
-
-## Tooling: uv + Ruff
-
-Install `uv` and run `uv sync` at the project root. The root `pyproject.toml` pins Ruff for the team's helper scripts; each cloned upstream repo uses its **own** uv-managed `.venv` to avoid OpenAI SDK and dependency conflicts. Commit `uv.lock` once generated for the team project; record dependency versions/lock information for each upstream environment separately. Never commit `.env` or secrets.
+## Bắt đầu
 
 ```bash
-uv sync
-uv run ruff format scripts/
-uv run ruff check scripts/
-uv run python -m scripts.prepare_spider --help
-```
-
-Use module invocation (`python -m scripts.<command>`) so imports resolve consistently. Current verified commands and remaining dataset prerequisites are in [docs/reproducibility.md](docs/reproducibility.md).
-
-## 4. Phase 0 — Freeze the experiment before touching method code
-
-- **Dataset:** Spider 1.0; use **train** only for few-shot examples where required; use **dev** only for evaluation. Never put dev reference SQL into prompts.
-- **Evaluation subset:** choose fixed 10 IDs for smoke tests, then 100–200 dev examples spanning multiple databases and difficulty levels. Save IDs, seed, and extraction script; do not resample per method.
-- **DB/schema:** use the exact same Spider SQLite databases and schema metadata for all methods. Preserve `db_id` and `question`.
-- **LLM:** choose one accessible OpenAI model ID and freeze it, plus temperature, max output tokens, retry policy and timeout. **Check model compatibility with each repo; old APIs may require adapters.**
-- **Metric:** official Spider 1.0 execution accuracy (EX), plus valid SQL rate, latency, API calls, errors, and optional tokens/cost. Clearly label subset results as subset results.
-- **Security:** execute model-generated SQL against read-only copies of SQLite databases with timeouts; never grant write permissions.
-
-### Input and output contract (team-level, not upstream repo CLI)
-
-Input record example:
-
-```json
-{"example_id":"dev_000001","db_id":"concert_singer","question":"..."}
-```
-
-Normalized prediction JSONL example:
-
-```json
-{"example_id":"dev_000001","db_id":"concert_singer","method":"din_sql","model":"YOUR_MODEL_ID","predicted_sql":"SELECT ...","status":"ok","latency_ms":0,"api_calls":0,"error":null}
-```
-
-`example_id` is a **team-assigned stable ID**, not an official Spider field. The values above are **illustrative only**. Keep original ordering or explicit IDs so SQL predictions align with ground truth.
-
-## 5. Phase 1 — Clone and inspect the upstream code
-
-```bash
-mkdir -p third_party
-
-git submodule update --init --recursive
+git clone --recurse-submodules https://github.com/dleqhuy/text2sql-reproduction.git
+cd text2sql-reproduction
+UV_CACHE_DIR=.uv-cache uv sync --locked
 uv run python -m scripts.bootstrap_upstream
-
-for repo in third_party/*; do
-  echo "=== $repo ==="
-  git -C "$repo" rev-parse HEAD
-  find "$repo" -maxdepth 2 -type f \( -name 'README*' -o -name 'requirements*.txt' -o -name 'pyproject.toml' -o -name '*.sh' \) | head -50
-done
+cp -n .env.example .env
 ```
 
-Run these searches in **each** repo and record the exact path and line numbers in its method guide:
+Điền `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL` trong `.env`. Nếu đã có file này, giữ nguyên cấu hình. Tiếp tục theo [runbook](docs/reproducibility.md) để tải dữ liệu, dựng môi trường từng method và chạy inference/evaluation.
 
-```bash
-# Search calls, model configuration, and environment variables.
-grep -RInE 'OPENAI_API_KEY|api_key|ChatCompletion|Completion\.create|chat\.completions|responses\.create|model=|model_name|gpt-' third_party/DAIL-SQL --include='*.py' --include='*.sh' --include='*.md' | head -100
+## Tài liệu
 
-# Repeat with the DIN-SQL and MAC-SQL directories.
-# Then search for entry points, input file loading, and output writing:
-grep -RInE 'argparse|if __name__|json\.load|jsonlines|read_csv|write|output|prediction|sqlite' third_party/DAIL-SQL --include='*.py' | head -100
-```
+| Cần làm gì | Tài liệu |
+|---|---|
+| Cài đặt và chạy lại | [Runbook](docs/reproducibility.md) |
+| Sửa fork, trace diff, tạo experiment manifest | [Repository workflow](docs/repository_workflow.md) |
+| Hiểu các method và adaptations | [Method audit](docs/repo_audit.md) |
+| Tải Spider và chuẩn bị subset | [Dataset](docs/spider_dataset.md) |
+| Hiểu protocol và metrics | [Experiment protocol](docs/experiment_protocol.md) |
+| Đọc input/output, checkpoints và metadata | [Contracts](docs/contracts.md) |
+| Xem phạm vi đã kiểm chứng | [Verification status](docs/implementation/status.md) |
 
-For each repo answer **with evidence from code**:
+## Kết quả
 
-1. Which command starts inference? What flags does it accept?
-2. Where does it read OpenAI credentials? Environment variable, config, CLI, or hardcoded string?
-3. Which code path sends requests to OpenAI? Which SDK version/API endpoint?
-4. Where is model ID configured? Can it be replaced without changing prompt/pipeline logic?
-5. Which Spider input format, preprocessing, examples, embeddings or intermediate artifacts does it require?
-6. Where does it write SQL predictions? Does it support resume and per-question logging?
-7. Does it **train** anything, or only preprocess/retrieve examples and call LLMs?
-8. What is the smallest patch needed to run it with the team's model and subset?
+[Báo cáo 100 câu](reports/benchmark_100.md) có bảng so sánh, usage và tám trường hợp lỗi; [comparison.json](reports/comparison.json) chứa metrics dạng máy đọc được. Kết quả dùng subset cố định 100 câu/20 DB, cùng model, và 695 official test-suite SQLite files. Đây là adapted reproduction; không phải full Spider dev hoặc điểm paper gốc.
 
-Do not assume that `OPENAI_API_KEY` alone is sufficient: some research repos use older OpenAI SDK conventions, non-OpenAI services, hardcoded model names, or require preprocessing.
+Benchmark này được chạy trước migration sang forks/submodules. [Historical manifest](experiments/historical/spider-v1-main-100.json) giữ provenance gốc; các [prepared manifests](experiments/README.md) mô tả cấu hình experiment mới, chưa có nghĩa inference đã chạy.
 
-## 6. Phase 2 — Configure API and environments
+## Cấu trúc
 
-Create `.env` locally (never commit it):
-
-```dotenv
-LLM_BASE_URL=https://your-provider.example/v1
-LLM_API_KEY=your_key_here
-LLM_MODEL=your_supported_model_id
-```
-
-Use a safe loader in a **thin adapter or the minimal patch**:
-
-```python
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-api_key = os.environ["LLM_API_KEY"]
-base_url = os.environ["LLM_BASE_URL"]
-model = os.environ["LLM_MODEL"]
-```
-
-**Important:** The snippet above only reads configuration; it does **not** automatically adapt older SDK calls to current ones. Determine compatibility from each repo's code and pinned dependencies. Do not replace a paper's prompt engineering or multi-agent logic as part of API migration. Commit method changes in the fork and preserve the upstream baseline for `git diff`.
-
-Environment per repo with **uv** (illustrative; confirm requirements and Python version in the upstream README first):
-
-```bash
-# Team-owned tools (run from project root)
-uv sync
-uv run ruff format --check scripts/
-uv run ruff check scripts/
-
-# DAIL-SQL: isolated upstream environment, not the root .venv
-uv venv third_party/DAIL-SQL/.venv --python 3.10
-uv pip install --python third_party/DAIL-SQL/.venv/bin/python -r third_party/DAIL-SQL/requirements.txt
-# Only if requirements.txt exists; otherwise follow the upstream setup instructions.
-# macOS/Linux example; Windows uses .venv/Scripts/python.exe
-```
-
-Use `uv run python -m scripts.<name>` from the project root for **team-owned scripts**. To execute an upstream script, use that repo's own interpreter, e.g. `third_party/DAIL-SQL/.venv/bin/python <verified-upstream-entrypoint> ...` with the correct working directory. Never assume that the root uv environment can run all three repositories. If uv cannot resolve old upstream dependencies, document the issue and use `uv pip` with pinned compatible versions; do not silently upgrade the original pipeline.
-
-**Ruff policy:** `uv run ruff format scripts/` and `uv run ruff check scripts/` for code written by the team. Do **not** autoformat `third_party/` or upstream code: it creates noisy diffs and makes reproduction harder to audit. For patched upstream files, keep the diff minimal and optionally run Ruff on specifically changed files only after review.
-
-## 7. Phase 3 — Run methods on Spider
-
-**A. Vanilla:** implement one simple OpenAI call taking `question + relevant schema`, returning SQL. It is a baseline; write its own `scripts/run_vanilla.py`.
-
-**B. DAIL-SQL:** follow the repo's official preprocessing and few-shot demonstration-selection steps. Train split may provide examples; **do not** train a model or use dev gold SQL in the prompt. Run inference using its actual documented entry point.
-
-**C. DIN-SQL:** preserve schema linking, classification/decomposition, generation, and self-correction stages to the extent implemented in the authors' code. Capture final SQL and ideally intermediate stage logs.
-
-**D. MAC-SQL:** preserve Selector, Decomposer, and Refiner roles and their execution-feedback loop. Use its GPT/API-based path, not an optional fine-tuned local model path. Confirm database execution permissions and retry/iteration limits.
-
-**Do not invent a common command like `python main.py --method dail` unless the team implements that wrapper.** Exact executable commands belong in each method guide **after inspection**.
-
-For each method use this progression:
-
-- [ ] Clone and pin commit
-- [ ] Read official README, identify entry point and dependencies
-- [ ] Identify API/model configuration in exact source files
-- [ ] Run upstream sample or 1 Spider dev example
-- [ ] Run the **same fixed 10** Spider dev examples
-- [ ] Save generated SQL and log errors
-- [ ] Run the **same fixed 100–200** dev examples
-- [ ] Normalize output to shared JSONL
-- [ ] Document exact command, commit, patches, and observed differences
-
-## 8. Phase 4 — Evaluation and reproducibility
-
-1. Normalize all outputs to `example_id`, `db_id`, `predicted_sql` with explicit error rows for failed examples.
-2. Use Spider's **official evaluation implementation** where practical; confirm the selected evaluator and execution-accuracy mode. Official Spider project: https://github.com/taoyds/spider .
-3. Compute EX on **all fixed examples** (failures count as incorrect), not only successful API responses.
-4. Report valid SQL rate, mean/median latency, API calls/question, and actual model/token usage if recorded.
-5. Keep `run_config.json` for each run: model, temperature, dataset IDs, repo commit, patch hash, prompt modifications, date, and environment versions.
-6. Review 5–10 error cases: missing table/column, bad joins, aggregation, nested SQL, wrong logic, execution failures.
-
-| Method | EX (fixed Spider dev subset) | Valid SQL | API calls/question | Latency | Notes |
-|---|---:|---:|---:|---:|---|
-| Vanilla | TBD | TBD | TBD | TBD | Team baseline |
-| DAIL-SQL | TBD | TBD | TBD | TBD | Upstream + documented patch |
-| DIN-SQL | TBD | TBD | TBD | TBD | Upstream + documented patch |
-| MAC-SQL | TBD | TBD | TBD | TBD | Upstream + documented patch |
-
-## 9. Patch policy
-
-**Allowed with disclosure:** replacing credential handling, adapting OpenAI SDK request/response syntax, setting a supported model ID, changing file paths, limiting examples, adding logging/checkpointing, converting Spider input/output formats, pinning compatible dependencies.
-
-**Not allowed to claim as faithful reproduction without qualification:** replacing retrieval with random examples, skipping DIN-SQL stages, removing MAC-SQL agents, disabling execution refinement, changing prompts substantially, or substituting a different algorithm.
-
-Maintain `docs/repo_audit.md` with a table: `method | upstream commit | source file:line | original behavior | change | reason | patch path | tested?`. Use the fork commit history and `git -C third_party/REPO diff <upstream-base> <adapted-commit>`; no per-run source snapshots are generated.
-
-## 10. Work split and timeline
-
-**Four people:** Person A: dataset/evaluator + Vanilla; B: DAIL-SQL; C: DIN-SQL; D: MAC-SQL. Everyone must produce their method's setup guide, one working command, and normalized output. A reviews evaluation alignment; all members cross-review 10-case smoke tests.
-
-| Days | Task | Acceptance criterion |
-|---|---|---|
-| 1–2 | Clone, audit, pin repos; obtain Spider | Exact files and run commands documented or blockers logged |
-| 3–4 | Baseline + fixed subset + evaluator | Vanilla outputs on 10 Spider dev examples |
-| 5–7 | API adaptation and preprocessing per repo | Each upstream method outputs SQL on at least 1–10 examples |
-| 8–10 | Fixed subset inference | All feasible methods complete same 100–200 IDs |
-| 11–12 | Evaluation and error analysis | Comparison table + representative errors |
-| 13–14 | Report, slides, reproducibility check | Fresh-machine instructions and limitations documented |
-
-If one upstream repo cannot run due to broken dependencies, document the blocker and minimal adaptation attempt; prioritize **three reproducible methods over four partially working methods**.
-
-## 11. Definition of done
-
-- [ ] Every method has a reproducible README with **real tested commands** (not guessed commands)
-- [ ] OpenAI key is loaded securely; no keys in git/logs
-- [ ] Spider split/IDs/database versions are identical across methods
-- [ ] Repo commits and patches are recorded
-- [ ] Inference runs without training
-- [ ] Raw predictions and normalized predictions are saved
-- [ ] Evaluation includes failures in denominator
-- [ ] Report explicitly says **code-based adapted reproduction**, not original-paper score reproduction
-
-## 12. References
-
-- DAIL-SQL: https://github.com/BeachWang/DAIL-SQL
-- DIN-SQL: https://github.com/MohammadrezaPourreza/Few-shot-NL2SQL-with-prompting
-- MAC-SQL: https://github.com/wbbeyourself/MAC-SQL
-- Spider: https://github.com/taoyds/spider
+- `scripts/`, `tests/`: orchestration, evaluation và kiểm tra chung.
+- `third_party/`: ba method forks và hai evaluator submodules.
+- `configs/`, `data/splits/`: cấu hình, dependency snapshots và fixed dataset manifest.
+- `experiments/`: prepared manifests và tham chiếu benchmark cũ.
+- `docs/`, `reports/`: hướng dẫn và kết quả.
+- `data/spider/`, `data/assets/`, `data/prepared/`, `data/test-suite/`, `runs/`: dữ liệu/artifacts local, Git ignore.

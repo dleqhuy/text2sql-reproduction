@@ -1,22 +1,21 @@
-# Experiment Protocol — Spider 1.0
+# Experiment protocol — Spider 1.0
 
-Implementation defaults (2026-10-17): main N=100, smoke N=10, seed=42, DB-balanced round-robin sampling with original-order output. No difficulty labels are fabricated. Runtime config: `configs/experiment.json`. A real manifest is frozen only after data preparation.
+## Dữ liệu và model
 
-Provider config: `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL`; Chat Completions probe passed. Temperature=0, request timeout=90s, max attempts=3, run call cap=1000, wall-time cap=14400s, SQL timeout=5s. Stage output caps: Vanilla/MAC=1024 default, DIN generation=600/correction=350, DAIL=200. Disclose these method differences in comparisons.
+Fixed main 100 câu trên 20 DB, smoke 10 là tập con, DB-balanced round-robin seed 42 và output theo original dev order. [Dataset manifest](../data/splits/spider-v1.json) ghi IDs/hashes; train chỉ làm demonstrations. Dev gold chỉ dùng evaluation/hardness, không vào prompts hoặc retrieval. Mọi method dùng cùng input, schema/DB và model cấu hình.
 
-Primary metric: **official Test Suite execution accuracy**, using 695 original/generated SQLite files across the 20 selected DBs, plug_value=false, keep_distinct=true, seed=42. `execution` on original DBs and `legacy` are separate reference metrics. Synthetic scores are not benchmark scores. See [current status](implementation/status.md).
+[Runtime config](../configs/experiment.json): temperature 0, request timeout 90s, tối đa 3 attempts, 1.000 calls/run, 14.400s/run và SQL timeout 5s. Token caps giữ khác biệt stage: Vanilla/MAC 1024, DIN generation 600/correction 350, DAIL 200/call. DAIL là 9-shot QA hai lượt, không self-consistency.
 
-- Use Spider **train** only for few-shot demonstrations if the original method needs them.
-- Use the same fixed Spider **dev** examples for all methods (10 smoke-test, 100–200 final).
-- Keep `db_id`, question and SQLite database version identical.
-- Freeze model ID, temperature, token budget, retry policy and timeout where technically possible.
-- Record method-specific additional settings (retrieval top-k, agent steps, prompt variants).
-- Use official Spider 1.0 execution evaluator, documenting the exact evaluator version and options.
-- Count missing predictions, timeouts and API failures as incorrect in overall EX.
-- Never execute untrusted generated SQL with write access.
-- Save one output row for every selected example, including failures.
-- Do not report subset scores as full Spider dev scores or claim reproduction of original paper numbers.
+## Metrics
 
-Environment reproducibility: team-owned tooling uses root `uv.lock`; upstream repositories use isolated uv-managed `.venv` environments. Log Python/package versions per method. Ruff formats and lints team-owned scripts only.
+Primary metric là **official Test Suite execution accuracy**, dùng 695 original/generated SQLite files thuộc 20 DB: `plug_value=false`, `keep_distinct=true`, seed 42. Evaluator commit được ghim bằng submodule; không đổi comparison logic gốc. Gold self-check cả 100 câu đã pass.
 
-Protocol note: main-100 includes the smoke 10 used to harden output parsing; it is not an independent holdout. Runs overlapped in time, so recorded latency is descriptive, not an isolated throughput benchmark. DAIL totals include preliminary + final generation, exclude offline linking/retrieval setup, and use no self-consistency. No token prices were assumed.
+`--metric execution` chỉ chấm DB gốc bằng cùng engine; `--metric legacy` là reference có hạn chế backtick. Hai metric này không được gọi là Test Suite Accuracy. Mẫu số luôn là toàn bộ IDs, kể cả missing/API/parse/timeout/budget failures. SQL chạy read-only và có deadline; harness/gold errors không tính thành model errors.
+
+Báo valid SQL, API requests, token totals/coverage và mean/median latency. DAIL cộng preliminary + final, chưa gồm offline linking/retrieval; unknown usage là null. Không quy đổi thành tiền nếu chưa có giá provider xác minh.
+
+## Phạm vi kết luận
+
+Smoke nằm trong main và đã dùng để sửa output handling, nên main không phải holdout độc lập. Các runs có thời gian chồng lấp; latency chỉ mô tả experiment này. Đây là adapted reproduction trên subset, không phải full-dev hoặc điểm paper gốc.
+
+[Báo cáo benchmark](../reports/benchmark_100.md) giữ kết quả trước migration; [workflow](repository_workflow.md) quy định manifests/source pins cho experiment mới. [Verification status](implementation/status.md) ghi phạm vi đã kiểm chứng.

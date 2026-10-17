@@ -1,6 +1,6 @@
 # Spider 1.0 — dữ liệu đã tải và kiểm tra
 
-Ngày 17/10/2026, tải lại **link chính thức thành công** sau lần trước bị quota. Sử dụng bản tải trực tiếp từ Yale/Google Drive, không cần thay bằng dataset khác.
+Spider 1.0 train/dev được tải từ nguồn Yale/Google Drive và kiểm tra checksum; raw data được Git ignore.
 
 ## Nguồn và tính toàn vẹn
 
@@ -8,7 +8,6 @@ Ngày 17/10/2026, tải lại **link chính thức thành công** sau lần trư
 - Archive: 205.800.266 bytes; CRC toàn archive hợp lệ.
 - SHA-256: `00636695dabed6b5f4b8328a16b13e069a2f16591d5efcce57660669c85b121b`.
 - Checksum khớp bản [mirror HAL-9001/spider-databases](https://huggingface.co/datasets/HAL-9001/spider-databases), revision `4a01bbac6520cd35b216db9e1724e5e1ada60aa4`. Đây là re-host độc lập, không phải nguồn xác thực bổ sung từ Yale.
-- [THU-BPM/chatgpt-sql trên GitHub](https://github.com/THU-BPM/chatgpt-sql), commit `116c7fc54f3134a24b93f147d834b58b84265da3`, cũng có `spider/database.zip` trong Git tree; không dùng mirror đó cho dữ liệu local hiện tại.
 - License dữ liệu: CC BY-SA 4.0; giữ attribution Spider (Yu et al., 2018).
 
 ## Cấu trúc local
@@ -31,10 +30,10 @@ Importer chỉ lấy phần train/dev cần cho experiment; bỏ test set, test 
 
 ## Tải hoặc import lại
 
-CLI đã chạy thành công với archive chính thức đã tải:
+Import archive local:
 
 ```bash
-uv run python -m scripts.fetch_spider --archive /tmp/text2sql-spider-retry.zip
+uv run python -m scripts.fetch_spider --archive /path/to/spider.zip
 ```
 
 Đối với checkout mới chưa có `data/spider`, có thể tải trực tiếp hoặc chọn mirror pin revision; cả hai phải vượt **cùng checksum**, nếu nhận HTML quota page hoặc file khác thì importer từ chối:
@@ -58,4 +57,4 @@ uv run python -m scripts.prepare_spider \
 
 Main có 100 câu trên 20 DB; smoke 10 câu là tập con cố định, chọn DB-balanced với seed 42. Inference input tách khỏi gold. Manifest được lưu local ở `data/prepared/spider-v1/manifest.json` và bản theo dõi trong Git ở [data/splits/spider-v1.json](../data/splits/spider-v1.json). Hash nguồn gắn stable IDs theo original dev index; không resample riêng từng method.
 
-Blocker download đã được giải quyết. DAIL vẫn cần CoreNLP/GloVe/MPNet và preprocessing cache thật trước khi chạy production retrieval.
+DAIL preprocessing, embedding assets và official generated test-suite databases được mô tả trong [runbook](reproducibility.md).

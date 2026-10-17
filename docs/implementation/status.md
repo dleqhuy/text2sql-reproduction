@@ -1,41 +1,18 @@
-# Trạng thái implementation — 17/10/2026
+# Phạm vi đã kiểm chứng
 
-Đã hoàn thành implementation, smoke và benchmark 100 câu cho cả bốn method trên máy hiện tại. Đầu ra: [benchmark](../../reports/benchmark_100.md), [metrics JSON](../../reports/comparison.json), [runbook](../reproducibility.md).
+## Implementation hiện tại
 
-| Phase | Kết quả đã kiểm chứng |
-|---|---|
-| 0 | Config/env loader LLM_*, contracts, Python 3.11, uv.lock, Ruff và Git ignore |
-| 1 | Pin source DAIL/DIN/MAC, Spider và official test-suite evaluator; môi trường upstream riêng và audit adaptations |
-| 2 | Provider probe thật; train/dev + 166 DB; main 100/smoke 10 seed 42; gold separation, SQL guard, checkpoint/resume; 695 suite SQLite files cho 20 DB |
-| 3 | Bốn method chạy endpoint thật; DAIL dùng CoreNLP + MPNet thật và hai lượt retrieval/inference; DIN/MAC dùng stages/classes gốc qua adapters |
-| 4 | Official Test Suite và original-DB evaluation đủ 100 câu/method; DAIL cộng accounting hai lượt; comparison JSON và tám error case studies |
+Runtime OpenAI Compatible, bốn method adapters, checkpoint/resume, SQL read-only/timeout và official Test Suite evaluation đã hoạt động trên Python 3.11.16/macOS arm64. [Benchmark 100 câu](../../reports/benchmark_100.md) giữ kết quả và giới hạn của experiment trước migration.
 
-## Benchmark đã hoàn thành
+39 tests đã pass: contracts, retry/usage, resume, evaluator counterexamples, parsers, DAIL accounting/cell-link cache, gitlink mismatch và manifest source/config/data/model validation. Root tooling và integration files trong forks đạt Ruff/format. Lệnh kiểm tra ở [runbook](../reproducibility.md).
 
-| Method | Test Suite đúng/100 | DB gốc đúng/100 | SQL valid/100 | API requests |
-|---|---:|---:|---:|---:|
-| Vanilla | 69 | 81 | 100 | 100 |
-| DAIL-SQL | 76 | 87 | 100 | 200 |
-| DIN-SQL | 78 | 86 | 96 | 400 |
-| MAC-SQL | 73 | 86 | 100 | 125 |
+## Fork/submodule migration
 
-Runs: `runs/spider-v1-main-{vanilla,dail,din,mac}/`; DAIL aggregate tham chiếu hai parent runs preliminary/final. Mẫu số luôn 100; bốn output DIN lỗi format được giữ nguyên và tính sai, không sửa predictions sau khi chấm.
+Đã clone mới từ GitHub với đủ năm submodules; bootstrap và manifest verification pass sau khi cung cấp dataset manifest/smoke inputs ignored. DAIL tạo lại 10 preliminary prompts bằng weights/cache thật, khớp prompts và selected train indices trước migration. Production preflight pass mà không gọi provider; 846 artifacts cũ được kiểm tra hash trước khi dọn tài liệu.
 
-31 tests pass, bao phủ contracts, retry/usage, resume, SQL guard, official comparison engine, parsers, DAIL accounting và cache cell-link tương đương source. Lệnh kiểm tra Ruff/format/tests ở runbook.
+## Giới hạn
 
-## Giới hạn nghiệm thu
-
-- Đây là adapted reproduction trên subset 100 câu/20 DB, không phải full-dev hoặc điểm paper. Smoke thuộc main và đã dùng để sửa compatibility handling.
-- Chưa chạy cold setup trên máy/platform khác; khả năng tái lập độc lập vẫn cần xác nhận.
-- Latency có run chồng lấp; DAIL chưa tính preprocessing/retrieval offline. Không suy ra chi phí tiền từ token usage.
-- Không bổ sung per-run source snapshot/diff theo yêu cầu người dùng; giữ source pins, provenance hashes và logs hiện có.
-
-Lịch sử fixture/smoke và hạn chế legacy evaluator ở [smoke report](../../reports/spider_smoke.md). Kết quả chính dùng official engine hỗ trợ backticks.
-
-## Cập nhật quản lý source và experiments
-
-Đã chuyển sang repo chính private, ba method forks và năm Git submodules; method-specific compatibility nằm trong forks. Gitlinks là nguồn executable commits duy nhất; upstream metadata giữ baseline để so diff. Có manifest create/verify, production guard và historical manifest tham chiếu đúng benchmark cũ. Chi tiết ở [workflow](../repository_workflow.md). Kiểm tra migration gồm suite gốc và các tests riêng cho pin mismatch, dirty sources, data/config/model drift, manifest commit và path traversal.
-
-Migration validation: 39 tests pass; bốn integration files trong forks đạt Ruff/format. DAIL preliminary prompts tạo lại với MPNet weights/cache thật khớp cả prompt và selected train indices của 10 câu smoke cũ. 846 artifacts trước migration được kiểm tra SHA-256, không thay đổi. Đây là kiểm tra offline, không có inference benchmark mới.
-
-Đã kiểm chứng fresh source clone từ GitHub với đủ năm submodules; bootstrap và manifest verify pass sau khi cung cấp dataset manifest/smoke inputs ignored. Kiểm tra dùng environment hiện có trên cùng máy, không thay thế cold setup toàn bộ dependencies/assets.
+- Cold setup toàn bộ dependencies/assets trên máy khác chưa được kiểm chứng; source-clone test dùng Python environment hiện có.
+- Benchmark chỉ gồm 100 câu/20 DB; smoke nằm trong main và đã dùng để sửa compatibility handling.
+- Run latency có chồng lấp; DAIL chưa gồm preprocessing/retrieval offline. Không suy ra chi phí tiền từ token usage.
+- Prepared manifests không chứng minh experiment mới đã chạy. Xem [workflow](../repository_workflow.md) và [historical manifest](../../experiments/historical/spider-v1-main-100.json).
