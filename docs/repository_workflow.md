@@ -87,3 +87,9 @@ Run metadata ghi manifest hash và root commit, đồng thời giữ config/bund
 [Historical manifest](../experiments/historical/spider-v1-main-100.json) tham chiếu đúng artifacts/provenance của benchmark đã hoàn thành. Các run gốc ghi root dirty cùng source hashes; không gán cho chúng commit fork mới hoặc tuyên bố khôi phục được uncommitted code từ hash. Predictions, metrics, reports và accounting cũ được giữ nguyên. Migration được kiểm tra bằng fixtures/offline tests; không tự động chạy lại benchmark có tính phí.
 
 Raw data, environments, `.env` và runs tiếp tục ignore. Người clone khác cần tải assets theo runbook; submodules chỉ giải quyết source versioning.
+
+## Kiểm chứng migration — 17/10/2026
+
+39 tests pass; Ruff/format pass cho root tooling và bốn integration files mới trong forks. DAIL preliminary tạo lại bằng weights/cache thật, cả 10 smoke prompts và selected train indices khớp trước migration. 846 artifacts cũ giữ nguyên SHA-256.
+
+Đã clone mới repo chính từ GitHub với `--recurse-submodules`, tải đúng cả năm gitlinks và chạy bootstrap thành công. Manifest mới verify thành công trên clone này sau khi copy hai file dữ liệu ignored (dataset manifest và smoke inputs). Bước kiểm tra dùng Python environment hiện có trên cùng máy; không phải xác nhận cold dependency/asset setup hoặc benchmark trên máy khác. Production preflight trên working checkout pass, không gọi provider.
