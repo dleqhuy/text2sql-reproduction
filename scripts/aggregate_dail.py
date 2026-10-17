@@ -40,7 +40,15 @@ def main():
         raise ValueError("Aggregate output already exists")
     first_config = read_json(args.preliminary_run / "run_config.json")
     last_config = read_json(args.final_run / "run_config.json")
-    for key in ("model", "config", "endpoint_hash", "input_hash", "manifest_hash", "upstream"):
+    for key in (
+        "model",
+        "config",
+        "endpoint_hash",
+        "input_hash",
+        "manifest_hash",
+        "upstream",
+        "experiment",
+    ):
         if first_config["identity"].get(key) != last_config["identity"].get(key):
             raise ValueError(f"DAIL stage config mismatch: {key}")
     inputs = read_jsonl(args.input)

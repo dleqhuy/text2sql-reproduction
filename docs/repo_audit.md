@@ -43,3 +43,9 @@ Các blocker ban đầu gồm Spider download, CoreNLP/Java, linking cache, MPNe
 - DAIL CoreNLP jars 3.9.2 từ Maven Central, Java 11 local; original tokenizer methods với lemma=True; loại allocation vector GloVe không được gọi trong linking. Có cache LIKE tương đương trên immutable DB copy, fallback SQLite cho wildcard/quotes/UTF-8 lỗi; đối chiếu source function và real smoke flags pass.
 - MPNet weights thật được pin revision e8c3b32edf5434bc2275fc9bab85f82640a19130; candidate vector cache keyed by texts/model/revision. Train + dev schema/cell linking đã chạy đầy đủ. DAIL accounting cộng preliminary + final, không báo một call/câu khi pipeline thực tế có hai lượt.
 - Không bổ sung source snapshot/diff theo yêu cầu người dùng. Giữ commit pins, provenance hashes, run logs và audit hiện có.
+
+## Migration sang fork/submodule
+
+Từ migration này, ba method dùng forks dưới tài khoản dleqhuy; hai evaluator trỏ upstream. Gitlinks ghim adapted commits; bảng audit phía trên mô tả baseline của benchmark trước migration. DIN/MAC compatibility classes và DAIL output/linking/embedding hooks đã chuyển vào `reproduction_adapter.py` trong từng fork; DAIL cell-link cache ở `reproduction_cell_link_cache.py`. Repo chính giữ transport/SQL guard và gọi các hooks này. Xem [workflow](repository_workflow.md) và [historical manifest](../experiments/historical/spider-v1-main-100.json).
+
+Migration không sửa predictions/metrics/reports cũ và không gán adapted fork SHA cho benchmark đã hoàn thành. Manifest mới có state prepared; production runner xác minh clean trees, runtime/source/config/data trước khi gọi provider.

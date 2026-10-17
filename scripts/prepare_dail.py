@@ -8,6 +8,7 @@ from pathlib import Path
 from scripts.common.contracts import validate_inputs, validate_predictions
 from scripts.common.io import ROOT, digest, file_hash, read_json, read_jsonl, write_json
 from scripts.common.provenance import git_info
+from scripts.common.sources import load_integration
 
 
 def prepare(args):
@@ -57,39 +58,9 @@ def prepare(args):
         embedding = read_json(embedding_config)
         import sentence_transformers
 
-        original_encoder = sentence_transformers.SentenceTransformer
-
-        def pinned_encoder(model, **kwargs):
-            if model != embedding["model"]:
-                raise ValueError("Upstream requested a different embedding model")
-            import numpy as np
-            import torch
-
-            torch.set_num_threads(4)
-            encoder = original_encoder(embedding["local_path"], **kwargs)
-            original_encode = encoder.encode
-
-            def encode(sentences, **options):
-                if len(sentences) < 100 or options:
-                    return original_encode(sentences, **options)
-                key = digest(
-                    {"model": model, "revision": embedding["revision"], "texts": sentences}
-                )
-                cache = ROOT / "data/assets/embeddings" / f"{key}.npy"
-                if cache.exists():
-                    return np.load(cache, allow_pickle=False)
-                vectors = original_encode(sentences)
-                cache.parent.mkdir(parents=True, exist_ok=True)
-                temporary = cache.with_suffix(".pending")
-                with temporary.open("wb") as stream:
-                    np.save(stream, vectors, allow_pickle=False)
-                temporary.replace(cache)
-                return vectors
-
-            encoder.encode = encode
-            return encoder
-
-        sentence_transformers.SentenceTransformer = pinned_encoder
+        original_encoder = load_integration("dail_sql").install_pinned_encoder(
+            embedding, ROOT / "data/assets/embeddings", digest
+        )
     try:
         prompt = prompt_factory("SQL", args.k_shot, "QA", selector)(
             data=data, tokenizer=args.tokenizer
@@ -99,8 +70,7 @@ def prepare(args):
             sentence_transformers.SentenceTransformer = original_encoder
     # Ground-truth query-skeleton quality is diagnostic in BasicICLPrompt, not retrieval.
     # Disable it rather than feeding dev gold into target structures.
-    selected = []
-    prompt.record_example_quality = lambda examples, target: selected.extend(examples)
+    selected = load_integration("dail_sql").record_selected_examples(prompt)
     dev = read_json(dev_path)
     linking = data.get_test_schema_linking()
     train_keys = {(r["db_id"], r["question"]): i for i, r in enumerate(train)}

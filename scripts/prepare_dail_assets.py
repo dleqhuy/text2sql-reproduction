@@ -8,6 +8,7 @@ from types import SimpleNamespace
 
 from scripts.common.io import ROOT, file_hash, read_json, write_json
 from scripts.common.provenance import git_info
+from scripts.common.sources import load_integration
 
 
 def main():
@@ -30,18 +31,12 @@ def main():
     from utils.linking_utils import corenlp as original_bridge
     from utils.pretrained_embeddings import GloVe
 
+    cell_connection = None
     if args.indexed_cell_links:
         from scripts.common.cell_link_cache import CellLinkConnection
 
-        original = data_preprocess.SpiderEncoderV2Preproc
-
-        class IndexedPreproc(original):
-            def preprocess_item(self, item, schema, validation_info):
-                if not isinstance(schema.connection, CellLinkConnection):
-                    schema.connection = CellLinkConnection(schema.connection)
-                return super().preprocess_item(item, schema, validation_info)
-
-        data_preprocess.SpiderEncoderV2Preproc = IndexedPreproc
+        cell_connection = CellLinkConnection
+    load_integration("dail_sql").configure_linking(data_preprocess, GloVe, cell_connection)
 
     if (args.dataset / "enc").exists():
         raise ValueError("Linking cache already exists; refusing to overwrite")
@@ -53,12 +48,6 @@ def main():
         start_server=False, endpoint=args.corenlp_endpoint, timeout=30000
     )
     original_bridge._singleton = SimpleNamespace(annotate=client.annotate)
-    # Audit: SpiderEncoderV2Preproc only calls word_emb.tokenize/tokenize_for_copying;
-    # it never reads vectors/dim/lookup. Keep the original GloVe methods and CoreNLP output.
-    tokenizer = GloVe.__new__(GloVe)
-    tokenizer.lemmatize = True
-    tokenizer.corenlp_annotators = ["tokenize", "ssplit", "lemma"]
-    data_preprocess.GloVe = lambda **kwargs: tokenizer
     data_preprocess.schema_linking_producer(
         "dev.json", "train_spider_and_others.json", "tables.json", "database", str(args.dataset)
     )

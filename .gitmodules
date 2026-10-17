@@ -1,0 +1,15 @@
+[submodule "third_party/DAIL-SQL"]
+	path = third_party/DAIL-SQL
+	url = https://github.com/dleqhuy/DAIL-SQL.git
+[submodule "third_party/Few-shot-NL2SQL-with-prompting"]
+	path = third_party/Few-shot-NL2SQL-with-prompting
+	url = https://github.com/dleqhuy/Few-shot-NL2SQL-with-prompting.git
+[submodule "third_party/MAC-SQL"]
+	path = third_party/MAC-SQL
+	url = https://github.com/dleqhuy/MAC-SQL.git
+[submodule "third_party/spider"]
+	path = third_party/spider
+	url = https://github.com/taoyds/spider.git
+[submodule "third_party/test-suite-sql-eval"]
+	path = third_party/test-suite-sql-eval
+	url = https://github.com/taoyds/test-suite-sql-eval.git

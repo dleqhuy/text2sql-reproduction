@@ -17,6 +17,7 @@ from scripts.common.io import (
 )
 from scripts.common.provenance import git_info
 from scripts.common.schema import load_schemas
+from scripts.common.sources import verify_source
 from scripts.common.sqlite_guard import execute
 
 METRICS = {
@@ -115,9 +116,7 @@ def main():
     inputs, manifest = read_jsonl(args.input), read_json(args.manifest)
     if file_hash(args.gold) != manifest["gold_hash"]:
         raise ValueError("Gold fingerprint mismatch")
-    info = git_info(args.evaluator)
-    if info["commit"] != expected_evaluator["commit"] or info["dirty"]:
-        raise ValueError("Evaluator differs from pinned clean commit")
+    verify_source(evaluator_key, path=args.evaluator)
     if digest(inputs) not in {manifest["input_hash"], manifest["smoke_input_hash"]}:
         raise ValueError("Input does not match frozen manifest")
     if file_hash(args.tables) != manifest["source_hashes"]["tables.json"]:

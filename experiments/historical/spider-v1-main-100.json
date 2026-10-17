@@ -1,0 +1,423 @@
+{
+  "schema_version": "historical-v1",
+  "name": "spider-v1-main-100-before-submodules",
+  "state": "completed",
+  "model": "cx/gpt-6-luna",
+  "input_hash": "294738963c501359d15ddab5bc39a90872922a9eca7f6d016debb5a62811581e",
+  "notes": "Imported references to existing artifacts, not a newly executed experiment. Original root commits were dirty; recorded hashes identify runtime differences but do not reconstruct uncommitted source. Do not relabel results with new fork commits.",
+  "report": {
+    "path": "reports/benchmark_100.md",
+    "sha256": "1321cda8013a2fe72c2cbc5bf48029ecd2ad8b1d7751e6cc5bb14c3d8d0a50f0"
+  },
+  "comparison": {
+    "path": "reports/comparison.json",
+    "sha256": "4fd76943fd0a5e2d228e4a6280e94511d7a87a923a59e33c7ca838909dceefa5"
+  },
+  "runs": {
+    "spider-v1-main-vanilla": {
+      "artifacts": {
+        "run_config.json": {
+          "path": "runs/spider-v1-main-vanilla/run_config.json",
+          "sha256": "a87de5a7f52196497d0bbf921bef05525353f183cc61f453728912f38fe99f93"
+        },
+        "predictions.jsonl": {
+          "path": "runs/spider-v1-main-vanilla/predictions.jsonl",
+          "sha256": "50ce82b002a5aab0cbd00a2fc13efb4d13f52c844c1306d5a13c3b8e0a91599a"
+        },
+        "provenance.json": {
+          "path": "runs/spider-v1-main-vanilla/provenance.json",
+          "sha256": "b673f1560fd93118e5fc68e9c56726b46f77e01069ee3e0fbf7192d07462ab45"
+        },
+        "eval-test-suite/evaluation_config.json": {
+          "path": "runs/spider-v1-main-vanilla/eval-test-suite/evaluation_config.json",
+          "sha256": "be72b69addd071533a7b7545d58d011c4146bad8e3d79271314abef6e4a7186e"
+        },
+        "eval-test-suite/metrics.json": {
+          "path": "runs/spider-v1-main-vanilla/eval-test-suite/metrics.json",
+          "sha256": "387e0e36fee2e4f2378e4e3338147136a43f3ddc987d23433fdeeb4eff190cf0"
+        },
+        "eval-execution/evaluation_config.json": {
+          "path": "runs/spider-v1-main-vanilla/eval-execution/evaluation_config.json",
+          "sha256": "90fff8660c1b65274428ff34446862791f638a75414ded168bf9e6e8b32526dc"
+        },
+        "eval-execution/metrics.json": {
+          "path": "runs/spider-v1-main-vanilla/eval-execution/metrics.json",
+          "sha256": "82362c43abc54067664bae2425787b1710a17d75fcfc7539e8b29dd31be0a90a"
+        }
+      },
+      "recorded_source": {
+        "root": {
+          "commit": "fc55a94349f53d5018b036f398c4246a9a27a38d",
+          "dirty": true,
+          "diff_hash": "14bcef9513e24d0b10ec0af05cfd894cc6f0e6484edf5e706471fd95ffedfd21"
+        },
+        "code_hash": "beafa47110c30600b4fc86ff69a91c89b2a12d1af7d1617e77f69f5d27f904dd"
+      },
+      "recorded_identity": {
+        "method": "vanilla",
+        "model": "cx/gpt-6-luna",
+        "config": {
+          "provider": "openai-compatible",
+          "temperature": 0,
+          "max_output_tokens": 1024,
+          "token_parameter": "max_tokens",
+          "request_timeout_s": 90,
+          "max_attempts": 3,
+          "retry_base_s": 1,
+          "max_run_calls": 1000,
+          "max_run_seconds": 14400,
+          "sql_timeout_s": 5,
+          "subset_size": 100,
+          "smoke_size": 10,
+          "seed": 42
+        },
+        "endpoint_hash": "21b638461e8eb0b351712f631acb5828bb8dd3a9f07c7fff894f690884edb241",
+        "input_hash": "294738963c501359d15ddab5bc39a90872922a9eca7f6d016debb5a62811581e",
+        "manifest_hash": "734ee3ba8d46d66c4e2e16beb826a8e561b804a51a25aac686cb9574cd0e46f5",
+        "tables_hash": "782be9166c9f94d203b08a440b9912fbfdd378a7f09ced93c0f560ebd34da8cd",
+        "code_hash": "beafa47110c30600b4fc86ff69a91c89b2a12d1af7d1617e77f69f5d27f904dd",
+        "dependencies_hash": "1484c0aaf0353e92e4740e061adfb6a3c1e0c12dafd56b297ff4407a061c67dc"
+      },
+      "status": "completed"
+    },
+    "spider-v1-main-din": {
+      "artifacts": {
+        "run_config.json": {
+          "path": "runs/spider-v1-main-din/run_config.json",
+          "sha256": "3a9daf90ff1a69aaf8cf14685e3abb1cc915067ce450a0951bf992d5e535c7d8"
+        },
+        "predictions.jsonl": {
+          "path": "runs/spider-v1-main-din/predictions.jsonl",
+          "sha256": "a08681c9c195ca449312e91d24da00e6a570b7ba03a8bc11c59d4d7077afd1fe"
+        },
+        "provenance.json": {
+          "path": "runs/spider-v1-main-din/provenance.json",
+          "sha256": "0c6888d4ab90c89ec9acca32f393203b41546db948512ba1abbe21acd0b99816"
+        },
+        "eval-test-suite/evaluation_config.json": {
+          "path": "runs/spider-v1-main-din/eval-test-suite/evaluation_config.json",
+          "sha256": "a137580cf129c1a36ab74f8aa0bbba202a20243185fbdb971b9e1e515ac3c486"
+        },
+        "eval-test-suite/metrics.json": {
+          "path": "runs/spider-v1-main-din/eval-test-suite/metrics.json",
+          "sha256": "8271516b5ce584cd51a0d2026eb97c4abc5ebc37d82a2ef0500468cbd429e185"
+        },
+        "eval-execution/evaluation_config.json": {
+          "path": "runs/spider-v1-main-din/eval-execution/evaluation_config.json",
+          "sha256": "d8836d142367d23c24b19fc5913634676d6027c13700251a97a7be5ab6b4bd5d"
+        },
+        "eval-execution/metrics.json": {
+          "path": "runs/spider-v1-main-din/eval-execution/metrics.json",
+          "sha256": "5123c8e87976be9bcca1c236beb333c094e324e41ce6891fe05f8051d055582f"
+        }
+      },
+      "recorded_source": {
+        "root": {
+          "commit": "fc55a94349f53d5018b036f398c4246a9a27a38d",
+          "dirty": true,
+          "diff_hash": "14bcef9513e24d0b10ec0af05cfd894cc6f0e6484edf5e706471fd95ffedfd21"
+        },
+        "code_hash": "708a92a98c0c1a362ab98b7fad37c142b4998d92ea96e5bc5d4532236f777285",
+        "upstream": {
+          "commit": "0474801616130413b024fd008b016a190684649e",
+          "dirty": false,
+          "diff_hash": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126"
+        }
+      },
+      "recorded_identity": {
+        "method": "din_sql",
+        "model": "cx/gpt-6-luna",
+        "config": {
+          "provider": "openai-compatible",
+          "temperature": 0,
+          "max_output_tokens": 1024,
+          "token_parameter": "max_tokens",
+          "request_timeout_s": 90,
+          "max_attempts": 3,
+          "retry_base_s": 1,
+          "max_run_calls": 1000,
+          "max_run_seconds": 14400,
+          "sql_timeout_s": 5,
+          "subset_size": 100,
+          "smoke_size": 10,
+          "seed": 42
+        },
+        "endpoint_hash": "21b638461e8eb0b351712f631acb5828bb8dd3a9f07c7fff894f690884edb241",
+        "input_hash": "294738963c501359d15ddab5bc39a90872922a9eca7f6d016debb5a62811581e",
+        "manifest_hash": "734ee3ba8d46d66c4e2e16beb826a8e561b804a51a25aac686cb9574cd0e46f5",
+        "tables_hash": "782be9166c9f94d203b08a440b9912fbfdd378a7f09ced93c0f560ebd34da8cd",
+        "code_hash": "708a92a98c0c1a362ab98b7fad37c142b4998d92ea96e5bc5d4532236f777285",
+        "dependencies_hash": "783800672f8deef168437ff6c96998fa345730de69081d9d3f30c4beaee6c958",
+        "upstream": {
+          "commit": "0474801616130413b024fd008b016a190684649e",
+          "dirty": false,
+          "diff_hash": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126"
+        }
+      },
+      "status": "completed"
+    },
+    "spider-v1-main-mac": {
+      "artifacts": {
+        "run_config.json": {
+          "path": "runs/spider-v1-main-mac/run_config.json",
+          "sha256": "77865a3a223e59c229d1304985dc797af8893f69ef36775f1c3b4783c74ca301"
+        },
+        "predictions.jsonl": {
+          "path": "runs/spider-v1-main-mac/predictions.jsonl",
+          "sha256": "2a197da64a3b7aba7f84d100d186a0ecc5d83d4097e6a4a0f4e850c2fcc85117"
+        },
+        "provenance.json": {
+          "path": "runs/spider-v1-main-mac/provenance.json",
+          "sha256": "ea38cbcf1fe1852d99ccc3e4e1a53964772e780ed1d8c42aa3125276c9cd5375"
+        },
+        "eval-test-suite/evaluation_config.json": {
+          "path": "runs/spider-v1-main-mac/eval-test-suite/evaluation_config.json",
+          "sha256": "0f6117cf690a695c140183c374232d88660f2014f2ac22dad96a3647f8867b15"
+        },
+        "eval-test-suite/metrics.json": {
+          "path": "runs/spider-v1-main-mac/eval-test-suite/metrics.json",
+          "sha256": "d9a845a5419f618d74f2d5bce375785bdac6e07fec32e880acbb9c179382f815"
+        },
+        "eval-execution/evaluation_config.json": {
+          "path": "runs/spider-v1-main-mac/eval-execution/evaluation_config.json",
+          "sha256": "520647c6154438c98772f0a2f952d1652d8632f42d866b3c2bb9cd1135a7d164"
+        },
+        "eval-execution/metrics.json": {
+          "path": "runs/spider-v1-main-mac/eval-execution/metrics.json",
+          "sha256": "63384605b677892078b40a50e1608d27d48eaa1b1d33eae9352688944f474bb1"
+        }
+      },
+      "recorded_source": {
+        "root": {
+          "commit": "fc55a94349f53d5018b036f398c4246a9a27a38d",
+          "dirty": true,
+          "diff_hash": "14bcef9513e24d0b10ec0af05cfd894cc6f0e6484edf5e706471fd95ffedfd21"
+        },
+        "code_hash": "beafa47110c30600b4fc86ff69a91c89b2a12d1af7d1617e77f69f5d27f904dd",
+        "upstream": {
+          "commit": "31a9df5e0d520be4769be57a4b9022e5e34a14f4",
+          "dirty": false,
+          "diff_hash": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126"
+        }
+      },
+      "recorded_identity": {
+        "method": "mac_sql",
+        "model": "cx/gpt-6-luna",
+        "config": {
+          "provider": "openai-compatible",
+          "temperature": 0,
+          "max_output_tokens": 1024,
+          "token_parameter": "max_tokens",
+          "request_timeout_s": 90,
+          "max_attempts": 3,
+          "retry_base_s": 1,
+          "max_run_calls": 1000,
+          "max_run_seconds": 14400,
+          "sql_timeout_s": 5,
+          "subset_size": 100,
+          "smoke_size": 10,
+          "seed": 42
+        },
+        "endpoint_hash": "21b638461e8eb0b351712f631acb5828bb8dd3a9f07c7fff894f690884edb241",
+        "input_hash": "294738963c501359d15ddab5bc39a90872922a9eca7f6d016debb5a62811581e",
+        "manifest_hash": "734ee3ba8d46d66c4e2e16beb826a8e561b804a51a25aac686cb9574cd0e46f5",
+        "tables_hash": "782be9166c9f94d203b08a440b9912fbfdd378a7f09ced93c0f560ebd34da8cd",
+        "code_hash": "beafa47110c30600b4fc86ff69a91c89b2a12d1af7d1617e77f69f5d27f904dd",
+        "dependencies_hash": "c0be5abec9c54c9c71426db7a1939ac428fa14a362c8e7351361118281b1569e",
+        "upstream": {
+          "commit": "31a9df5e0d520be4769be57a4b9022e5e34a14f4",
+          "dirty": false,
+          "diff_hash": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126"
+        }
+      },
+      "status": "completed"
+    },
+    "spider-v1-main-dail-preliminary": {
+      "artifacts": {
+        "run_config.json": {
+          "path": "runs/spider-v1-main-dail-preliminary/run_config.json",
+          "sha256": "efeff336f62d19213d742ea2559d8293371020130fefd72b47d67e7ccae61f77"
+        },
+        "predictions.jsonl": {
+          "path": "runs/spider-v1-main-dail-preliminary/predictions.jsonl",
+          "sha256": "9a25a9c504777f62134ba897102656e0aceb83c8e36465bc0fddc08c64550e5b"
+        },
+        "provenance.json": {
+          "path": "runs/spider-v1-main-dail-preliminary/provenance.json",
+          "sha256": "1d351cda1d2739b0ebd4ebbad4d6c450b10b4ef148862ada499e2ebcc22932f5"
+        }
+      },
+      "recorded_source": {
+        "root": {
+          "commit": "fc55a94349f53d5018b036f398c4246a9a27a38d",
+          "dirty": true,
+          "diff_hash": "14bcef9513e24d0b10ec0af05cfd894cc6f0e6484edf5e706471fd95ffedfd21"
+        },
+        "code_hash": "49fc6572696ccad54d3a1b61d3dfde8b714565496225e07523c847c4d5c200b7",
+        "upstream": {
+          "commit": "2061f68112222083134a0c9e2877961ff315ff44",
+          "dirty": false,
+          "diff_hash": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126"
+        }
+      },
+      "recorded_identity": {
+        "method": "dail_sql",
+        "model": "cx/gpt-6-luna",
+        "config": {
+          "provider": "openai-compatible",
+          "temperature": 0,
+          "max_output_tokens": 1024,
+          "token_parameter": "max_tokens",
+          "request_timeout_s": 90,
+          "max_attempts": 3,
+          "retry_base_s": 1,
+          "max_run_calls": 1000,
+          "max_run_seconds": 14400,
+          "sql_timeout_s": 5,
+          "subset_size": 100,
+          "smoke_size": 10,
+          "seed": 42
+        },
+        "endpoint_hash": "21b638461e8eb0b351712f631acb5828bb8dd3a9f07c7fff894f690884edb241",
+        "input_hash": "294738963c501359d15ddab5bc39a90872922a9eca7f6d016debb5a62811581e",
+        "manifest_hash": "734ee3ba8d46d66c4e2e16beb826a8e561b804a51a25aac686cb9574cd0e46f5",
+        "tables_hash": "782be9166c9f94d203b08a440b9912fbfdd378a7f09ced93c0f560ebd34da8cd",
+        "code_hash": "49fc6572696ccad54d3a1b61d3dfde8b714565496225e07523c847c4d5c200b7",
+        "dependencies_hash": "1484c0aaf0353e92e4740e061adfb6a3c1e0c12dafd56b297ff4407a061c67dc",
+        "upstream": {
+          "commit": "2061f68112222083134a0c9e2877961ff315ff44",
+          "dirty": false,
+          "diff_hash": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126"
+        },
+        "dail_bundle_hash": "0e0861cd395e87cc9f3bf5038dfac3fc707c2a8bc87ea5c76c8a9d7cae235e23"
+      },
+      "status": "completed"
+    },
+    "spider-v1-main-dail-final": {
+      "artifacts": {
+        "run_config.json": {
+          "path": "runs/spider-v1-main-dail-final/run_config.json",
+          "sha256": "9801d459fec4ae857997b8fa26cb3da8278b1b56b91ef4af63eeb8fa6d9448a8"
+        },
+        "predictions.jsonl": {
+          "path": "runs/spider-v1-main-dail-final/predictions.jsonl",
+          "sha256": "2cfdb3ce28216412a0429acba71dba21ad7f9e7485f231afdfbd1fd9c3a36395"
+        },
+        "provenance.json": {
+          "path": "runs/spider-v1-main-dail-final/provenance.json",
+          "sha256": "be455fbd48fdcbb9cf756d71d12139ca05faa82fd03db60c397cb56936ca4003"
+        }
+      },
+      "recorded_source": {
+        "root": {
+          "commit": "fc55a94349f53d5018b036f398c4246a9a27a38d",
+          "dirty": true,
+          "diff_hash": "27acee782d228b6d865d60c4f5346fb9daef11e404f4fd2b024ab90f7bd89518"
+        },
+        "code_hash": "49fc6572696ccad54d3a1b61d3dfde8b714565496225e07523c847c4d5c200b7",
+        "upstream": {
+          "commit": "2061f68112222083134a0c9e2877961ff315ff44",
+          "dirty": false,
+          "diff_hash": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126"
+        }
+      },
+      "recorded_identity": {
+        "method": "dail_sql",
+        "model": "cx/gpt-6-luna",
+        "config": {
+          "provider": "openai-compatible",
+          "temperature": 0,
+          "max_output_tokens": 1024,
+          "token_parameter": "max_tokens",
+          "request_timeout_s": 90,
+          "max_attempts": 3,
+          "retry_base_s": 1,
+          "max_run_calls": 1000,
+          "max_run_seconds": 14400,
+          "sql_timeout_s": 5,
+          "subset_size": 100,
+          "smoke_size": 10,
+          "seed": 42
+        },
+        "endpoint_hash": "21b638461e8eb0b351712f631acb5828bb8dd3a9f07c7fff894f690884edb241",
+        "input_hash": "294738963c501359d15ddab5bc39a90872922a9eca7f6d016debb5a62811581e",
+        "manifest_hash": "734ee3ba8d46d66c4e2e16beb826a8e561b804a51a25aac686cb9574cd0e46f5",
+        "tables_hash": "782be9166c9f94d203b08a440b9912fbfdd378a7f09ced93c0f560ebd34da8cd",
+        "code_hash": "49fc6572696ccad54d3a1b61d3dfde8b714565496225e07523c847c4d5c200b7",
+        "dependencies_hash": "1484c0aaf0353e92e4740e061adfb6a3c1e0c12dafd56b297ff4407a061c67dc",
+        "upstream": {
+          "commit": "2061f68112222083134a0c9e2877961ff315ff44",
+          "dirty": false,
+          "diff_hash": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126"
+        },
+        "dail_bundle_hash": "d3c0ec74c104388cceb96fc9711be587e8711075a49a871411994cd5580d2747"
+      },
+      "status": "completed"
+    },
+    "spider-v1-main-dail": {
+      "artifacts": {
+        "run_config.json": {
+          "path": "runs/spider-v1-main-dail/run_config.json",
+          "sha256": "e323b335b21190b1864f037a22a6139ac34658a3b77420a1a610e96852d46e49"
+        },
+        "predictions.jsonl": {
+          "path": "runs/spider-v1-main-dail/predictions.jsonl",
+          "sha256": "cfc322c4138dc8a04ec6e3c382004eea1bf62fc729dc3766bf76347386bed721"
+        },
+        "eval-test-suite/evaluation_config.json": {
+          "path": "runs/spider-v1-main-dail/eval-test-suite/evaluation_config.json",
+          "sha256": "b3fbd4751bed190b17075519b3a84386c4d796c1b132b9ee2ca30ba229e268d6"
+        },
+        "eval-test-suite/metrics.json": {
+          "path": "runs/spider-v1-main-dail/eval-test-suite/metrics.json",
+          "sha256": "6763e2fc281a35206486fa797f1f5809242fae1543c788636822c042cf57f9e8"
+        },
+        "eval-execution/evaluation_config.json": {
+          "path": "runs/spider-v1-main-dail/eval-execution/evaluation_config.json",
+          "sha256": "b17460cb03faa4711c822c5e03fe806299a79f621d7ac901d8735bef67051ab9"
+        },
+        "eval-execution/metrics.json": {
+          "path": "runs/spider-v1-main-dail/eval-execution/metrics.json",
+          "sha256": "5e168690b281e665ff49bd6d17f4bb975e8cbb4a080b2bf3d764a2b326e393d9"
+        }
+      },
+      "recorded_identity": {
+        "method": "dail_sql",
+        "model": "cx/gpt-6-luna",
+        "config": {
+          "provider": "openai-compatible",
+          "temperature": 0,
+          "max_output_tokens": 1024,
+          "token_parameter": "max_tokens",
+          "request_timeout_s": 90,
+          "max_attempts": 3,
+          "retry_base_s": 1,
+          "max_run_calls": 1000,
+          "max_run_seconds": 14400,
+          "sql_timeout_s": 5,
+          "subset_size": 100,
+          "smoke_size": 10,
+          "seed": 42
+        },
+        "endpoint_hash": "21b638461e8eb0b351712f631acb5828bb8dd3a9f07c7fff894f690884edb241",
+        "input_hash": "294738963c501359d15ddab5bc39a90872922a9eca7f6d016debb5a62811581e",
+        "manifest_hash": "734ee3ba8d46d66c4e2e16beb826a8e561b804a51a25aac686cb9574cd0e46f5",
+        "tables_hash": "782be9166c9f94d203b08a440b9912fbfdd378a7f09ced93c0f560ebd34da8cd",
+        "code_hash": "49fc6572696ccad54d3a1b61d3dfde8b714565496225e07523c847c4d5c200b7",
+        "dependencies_hash": "1484c0aaf0353e92e4740e061adfb6a3c1e0c12dafd56b297ff4407a061c67dc",
+        "upstream": {
+          "commit": "2061f68112222083134a0c9e2877961ff315ff44",
+          "dirty": false,
+          "diff_hash": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126"
+        },
+        "dail_bundle_hash": "d3c0ec74c104388cceb96fc9711be587e8711075a49a871411994cd5580d2747",
+        "variant": "two-stage"
+      },
+      "status": "completed",
+      "parents": [
+        "runs/spider-v1-main-dail-preliminary",
+        "runs/spider-v1-main-dail-final"
+      ]
+    }
+  }
+}

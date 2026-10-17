@@ -1,7 +1,9 @@
 import pytest
 
+from scripts import aggregate_dail
 from scripts.aggregate_dail import aggregate
 from scripts.common.contracts import failure
+from scripts.common.io import write_json
 
 
 def test_two_stage_usage_and_failure_denominator():
@@ -26,3 +28,25 @@ def test_two_stage_usage_and_failure_denominator():
     assert result["prompt_tokens"] is None
     with pytest.raises(ValueError):
         aggregate(inputs, [a], [{**b, "model": "other"}])
+
+
+def test_aggregate_rejects_mixed_experiment_manifests(tmp_path, monkeypatch):
+    first, final = tmp_path / "first", tmp_path / "final"
+    write_json(first / "run_config.json", {"identity": {"experiment": {"sha256": "a"}}})
+    write_json(final / "run_config.json", {"identity": {"experiment": {"sha256": "b"}}})
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "aggregate_dail",
+            "--input",
+            "unused.jsonl",
+            "--preliminary-run",
+            str(first),
+            "--final-run",
+            str(final),
+            "--output",
+            str(tmp_path / "aggregate"),
+        ],
+    )
+    with pytest.raises(ValueError, match="config mismatch: experiment"):
+        aggregate_dail.main()

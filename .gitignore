@@ -183,7 +183,12 @@ cython_debug/
 # Local research artifacts and downloaded upstream checkouts
 .DS_Store
 .uv-cache/
-third_party/
+third_party/*
+!third_party/DAIL-SQL
+!third_party/Few-shot-NL2SQL-with-prompting
+!third_party/MAC-SQL
+!third_party/spider
+!third_party/test-suite-sql-eval
 data/spider/
 data/prepared/
 data/nltk_data/

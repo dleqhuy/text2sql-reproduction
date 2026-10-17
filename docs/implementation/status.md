@@ -31,3 +31,9 @@ Runs: `runs/spider-v1-main-{vanilla,dail,din,mac}/`; DAIL aggregate tham chiếu
 - Không bổ sung per-run source snapshot/diff theo yêu cầu người dùng; giữ source pins, provenance hashes và logs hiện có.
 
 Lịch sử fixture/smoke và hạn chế legacy evaluator ở [smoke report](../../reports/spider_smoke.md). Kết quả chính dùng official engine hỗ trợ backticks.
+
+## Cập nhật quản lý source và experiments
+
+Đã chuyển sang repo chính private, ba method forks và năm Git submodules; method-specific compatibility nằm trong forks. Gitlinks là nguồn executable commits duy nhất; upstream metadata giữ baseline để so diff. Có manifest create/verify, production guard và historical manifest tham chiếu đúng benchmark cũ. Chi tiết ở [workflow](../repository_workflow.md). Kiểm tra migration gồm suite gốc và các tests riêng cho pin mismatch, dirty sources, data/config/model drift, manifest commit và path traversal.
+
+Migration validation: 39 tests pass; bốn integration files trong forks đạt Ruff/format. DAIL preliminary prompts tạo lại với MPNet weights/cache thật khớp cả prompt và selected train indices của 10 câu smoke cũ. 846 artifacts trước migration được kiểm tra SHA-256, không thay đổi. Đây là kiểm tra offline, không có inference benchmark mới.

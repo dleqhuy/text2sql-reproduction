@@ -8,12 +8,14 @@ from pathlib import Path
 
 from scripts.common.config import credentials, load_config
 from scripts.common.contracts import failure, validate_inputs, validate_predictions
+from scripts.common.experiment import validate_run
 from scripts.common.io import ROOT, db_path, digest, file_hash, read_json, read_jsonl, write_json
 from scripts.common.llm import LLM, BudgetExceeded, ProviderFailure
 from scripts.common.methods import DIN, MAC, DAILPrepared, Vanilla
-from scripts.common.provenance import code_provenance, git_info
+from scripts.common.provenance import code_provenance
 from scripts.common.run_store import RunStore
 from scripts.common.schema import load_schemas
+from scripts.common.sources import verify_source
 
 REPOS = {"din_sql": "Few-shot-NL2SQL-with-prompting", "mac_sql": "MAC-SQL", "dail_sql": "DAIL-SQL"}
 
@@ -35,6 +37,12 @@ def run(args):
         path = db_path(args.db_root, row["db_id"])
         if file_hash(path) != manifest["database_hashes"][row["db_id"]]:
             raise ValueError("DB differs from frozen manifest")
+    experiment_path = getattr(args, "experiment_manifest", None)
+    if getattr(args, "production", False) and not experiment_path:
+        raise ValueError("Production runs require --experiment-manifest")
+    experiment = (
+        validate_run(experiment_path, args, creds.model, config) if experiment_path else None
+    )
     provenance = code_provenance()
     identity = {
         "method": args.method,
@@ -47,12 +55,11 @@ def run(args):
         "code_hash": provenance["code_hash"],
         "dependencies_hash": digest(provenance["dependencies"]),
     }
+    if experiment:
+        provenance["experiment"] = identity["experiment"] = experiment
     repo = ROOT / "third_party" / REPOS[args.method] if args.method in REPOS else None
     if repo:
-        provenance["upstream"] = git_info(repo)
-        lock = read_json(ROOT / "configs/upstream_lock.json")[args.method]
-        if provenance["upstream"]["commit"] != lock["commit"] or provenance["upstream"]["dirty"]:
-            raise ValueError("Upstream checkout differs from pinned clean commit")
+        provenance["upstream"] = verify_source(args.method)
         identity["upstream"] = provenance["upstream"]
     if args.method == "dail_sql":
         if not args.dail_prompts:
@@ -161,6 +168,12 @@ def main(default_method=None):
     parser.add_argument("--config")
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--dail-prompts")
+    parser.add_argument("--experiment-manifest", type=Path)
+    parser.add_argument(
+        "--production",
+        action="store_true",
+        help="Require a verified experiment manifest and clean sources",
+    )
     args = parser.parse_args()
     run(args)
 

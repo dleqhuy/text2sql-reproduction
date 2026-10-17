@@ -2,6 +2,10 @@
 
 Chạy từ root repo, Python 3.11.16/macOS arm64 đã kiểm chứng. Team scripts dùng `python -m scripts.<command>`. `.env` giữ `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL`; không đổi credential sang source upstream.
 
+## Source versioning và manifests
+
+Repo đã chuyển sang 3 forks + 5 submodules. [Workflow Git và experiment manifests](repository_workflow.md) mô tả clone, trace diff, cập nhật source pins và production runs. Các lệnh bên dưới vẫn dùng cho development; benchmark chính thức thêm `--production --experiment-manifest <path>` cho mỗi inference stage. Không dùng lại prompt bundle DAIL cũ khi fork commit thay đổi.
+
 ## Setup
 
 ```bash
@@ -10,7 +14,7 @@ uv run python -m scripts.bootstrap_upstream
 uv run python -m nltk.downloader -q -d data/nltk_data punkt_tab stopwords wordnet punkt
 ```
 
-Bootstrap pin cả ba method, legacy Spider và official test-suite evaluator theo `configs/upstream_lock.json`. Môi trường inference riêng được pin trong `configs/environments/*-requirements.txt`. Ví dụ dựng DIN (MAC/DAIL tương tự, thay path và snapshot):
+Bootstrap kiểm tra gitlinks của cả ba method, legacy Spider và official test-suite evaluator. `configs/upstream_lock.json` giữ metadata upstream/baseline; executable commit chỉ lấy từ submodules. Môi trường inference riêng được pin trong `configs/environments/*-requirements.txt`. Ví dụ dựng DIN (MAC/DAIL tương tự, thay path và snapshot):
 
 ```bash
 UV_CACHE_DIR=.uv-cache uv venv third_party/Few-shot-NL2SQL-with-prompting/.venv --python 3.11
