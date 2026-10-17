@@ -1,6 +1,6 @@
 # Text-to-SQL Reproduction
 
-Chạy inference Vanilla, DAIL-SQL, DIN-SQL và MAC-SQL trên Spider 1.0 bằng cùng model OpenAI Compatible; không training. Repo chính quản lý runner/evaluation; ba method forks và hai evaluator được ghim bằng Git submodules.
+Chạy inference Vanilla, DAIL-SQL, DIN-SQL và MAC-SQL trên Spider 1.0 bằng cùng model OpenAI Compatible; không training. Mỗi method fork tự gọi API và chạy độc lập; repo chính điều phối các CLI và chấm điểm. Ba forks và hai evaluator được ghim bằng Git submodules.
 
 ## Bắt đầu
 
@@ -20,6 +20,7 @@ cp -n .env.example .env
 |---|---|
 | Cài đặt và chạy lại | [Runbook](docs/reproducibility.md) |
 | Sửa fork, trace diff, tạo experiment manifest | [Repository workflow](docs/repository_workflow.md) |
+| Xem kế hoạch migration standalone | [Migration plan](docs/standalone_migration.md) |
 | Hiểu các method và adaptations | [Method audit](docs/repo_audit.md) |
 | Tải Spider và chuẩn bị subset | [Dataset](docs/spider_dataset.md) |
 | Hiểu protocol và metrics | [Experiment protocol](docs/experiment_protocol.md) |

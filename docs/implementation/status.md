@@ -2,9 +2,9 @@
 
 ## Implementation hiện tại
 
-Runtime OpenAI Compatible, bốn method adapters, checkpoint/resume, SQL read-only/timeout và official Test Suite evaluation đã hoạt động trên Python 3.11.16/macOS arm64. [Benchmark 100 câu](../../reports/benchmark_100.md) giữ kết quả và giới hạn của experiment trước migration.
+Ba standalone forks dùng native OpenAI Compatible clients; repo chính gọi CLI bằng subprocess. Checkpoint/resume, SQL read-only/timeout và official Test Suite evaluation đã hoạt động trên Python 3.11.16/macOS arm64. [Benchmark 100 câu](../../reports/benchmark_100.md) giữ kết quả và giới hạn của experiment trước migration.
 
-39 tests đã pass: contracts, retry/usage, resume, evaluator counterexamples, parsers, DAIL accounting/cell-link cache, gitlink mismatch và manifest source/config/data/model validation. Root tooling và integration files trong forks đạt Ruff/format. Lệnh kiểm tra ở [runbook](../reproducibility.md).
+45 tests đã pass: contracts, retry/usage, resume, evaluator counterexamples, parsers, DAIL accounting/cell-link cache, gitlink mismatch và manifest source/config/data/model validation. Root tooling và integration files trong forks đạt Ruff/format. Lệnh kiểm tra ở [runbook](../reproducibility.md).
 
 ## Fork/submodule migration
 
@@ -16,3 +16,5 @@ Runtime OpenAI Compatible, bốn method adapters, checkpoint/resume, SQL read-on
 - Benchmark chỉ gồm 100 câu/20 DB; smoke nằm trong main và đã dùng để sửa compatibility handling.
 - Run latency có chồng lấp; DAIL chưa gồm preprocessing/retrieval offline. Không suy ra chi phí tiền từ token usage.
 - Prepared manifests không chứng minh experiment mới đã chạy. Xem [workflow](../repository_workflow.md) và [historical manifest](../../experiments/historical/spider-v1-main-100.json).
+
+Standalone validation: 7 fork unit tests trên fresh GitHub clones, local HTTP provider/CLI/resume, DIN prompt preservation và MAC refinement; không import parent runtime. DAIL asset jars/model files đã verify và preliminary và final prompts/retrieval đều khớp 10/10 trước migration. Chi tiết và trình tự ở [migration plan](../standalone_migration.md). Kiểm tra dùng environments hiện có, chưa phải cold dependency setup trên máy khác.

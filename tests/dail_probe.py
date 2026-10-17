@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import os
 import sys
 import types
 from pathlib import Path
@@ -10,7 +11,10 @@ import numpy as np
 
 from scripts.common.contracts import failure
 from scripts.common.io import ROOT, read_json, read_jsonl, write_json, write_jsonl
-from scripts.prepare_dail import prepare
+
+os.environ.setdefault("NLTK_DATA", str(ROOT / "data/nltk_data"))
+sys.path.insert(0, str(ROOT / "third_party/DAIL-SQL"))
+from reproduction.prepare import prepare
 
 
 class FixtureEncoder:

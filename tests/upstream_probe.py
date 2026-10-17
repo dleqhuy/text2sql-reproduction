@@ -1,10 +1,10 @@
 """Subprocess fixture for isolated upstream environments; no provider calls."""
 
 import argparse
+import sys
 from types import SimpleNamespace
 
 from scripts.common.io import ROOT
-from scripts.common.methods import DIN, MAC
 
 
 class FakeLLM:
@@ -47,9 +47,15 @@ def main():
     parser.add_argument("--branch", default="EASY")
     args = parser.parse_args()
     llm = FakeLLM(args.method, args.branch)
+    folder = "Few-shot-NL2SQL-with-prompting" if args.method == "din" else "MAC-SQL"
+    sys.path.insert(0, str(ROOT / "third_party" / folder))
     if args.method == "din":
+        from reproduction_adapter import DIN
+
         method = DIN(llm, ROOT / "third_party/Few-shot-NL2SQL-with-prompting", args.tables)
     else:
+        from reproduction_adapter import MAC
+
         method = MAC(llm, ROOT / "third_party/MAC-SQL", args.tables, args.db_root, 2)
     sql = method.infer(
         {"example_id": "dev_000000", "db_id": "mini", "question": "How many people?"}

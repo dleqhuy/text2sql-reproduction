@@ -46,7 +46,7 @@ runs/<run-id>/
     └── comparison.md
 ```
 
-RunStore ghi identity/config, checkpoint atomic và một writer lock; runner ghi code/dependency/source fingerprints. Production metadata thêm experiment manifest hash/root commit. DAIL aggregate giữ parent references thay vì tạo lại events/checkpoints. Không lưu key, authorization headers hoặc raw env.
+Mỗi standalone fork có RunStore ghi identity/config, checkpoint atomic và một writer lock; native runner ghi code/dependency/source fingerprints. Wrapper repo chính truyền orchestrator identity/provenance qua file context tạm, không truyền credentials trong file đó. Production metadata thêm experiment manifest hash/root commit. DAIL aggregate giữ parent references thay vì tạo lại events/checkpoints. Không lưu key, authorization headers hoặc raw env.
 
 ## Resume và evaluation
 

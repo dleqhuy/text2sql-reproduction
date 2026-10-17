@@ -1,6 +1,6 @@
 # Method audit và adaptations
 
-Ba method forks giữ code tương thích trong `reproduction_adapter.py`; repo chính truyền provider/SQL guard qua hooks. Executable commits lấy từ gitlinks. [Upstream metadata](../configs/upstream_lock.json) giữ baseline để so diff; [workflow](repository_workflow.md) hướng dẫn trace và cập nhật phiên bản.
+Ba method forks tự chạy bằng `reproduction.run`; native source dùng provider/SQL guard của chính fork, không import repo chính. Repo chính chỉ gọi CLI bằng subprocess. Executable commits lấy từ gitlinks. [Upstream metadata](../configs/upstream_lock.json) giữ baseline để so diff; [workflow](repository_workflow.md) hướng dẫn trace và cập nhật phiên bản.
 
 | Method | Upstream baseline | Pipeline |
 |---|---|---|
@@ -23,15 +23,15 @@ MPNet weights/revision ở [embedding config](../configs/dail_embedding.json). C
 
 Nguồn: [Few-shot-NL2SQL-with-prompting](https://github.com/MohammadrezaPourreza/Few-shot-NL2SQL-with-prompting); [fork integration](https://github.com/dleqhuy/Few-shot-NL2SQL-with-prompting/tree/codex/reproduction-integration). Original prompts và functions nằm trong `DIN-SQL.py`.
 
-AST loader thay credential stub sai cú pháp `API_KEY = #key` trong bộ nhớ và nạp prompt constants/functions, bỏ argv/main/legacy API side effects. Giữ bốn stages, stop sequences và caps 600 generation/350 correction; transport có bounded retries.
+`DIN-SQL.py` đã bỏ argv/key/gold side effects khi import, thay API cũ bằng native compatible client và chuyển main sang CLI. Loader import module bình thường, không còn rewrite AST. Test xác nhận original prompt constants/builders không đổi; giữ bốn stages, stop sequences và caps 600/350.
 
-Classification parser nhận quoted/plain/Markdown label. Khi NESTED thiếu subquestions, dùng câu hỏi gốc làm subproblem và log fallback; không bỏ generation/correction. Correction xử lý full SELECT hoặc continuation; vẫn còn trường hợp SELECT trước Markdown fence không execute được. Bốn output như vậy được giữ và tính sai trong benchmark.
+Classification parser nhận quoted/plain/Markdown label. Khi NESTED thiếu subquestions, dùng câu hỏi gốc làm subproblem và log fallback; không bỏ generation/correction. Correction hỗ trợ full SELECT, continuation và fenced SQL. Bốn output lỗi fence trong benchmark cũ vẫn giữ nguyên và tính sai; parser mới chưa được dùng để gán lại điểm cho chúng.
 
 ## MAC-SQL
 
 Nguồn: [MAC-SQL](https://github.com/wbbeyourself/MAC-SQL); [fork integration](https://github.com/dleqhuy/MAC-SQL/tree/codex/reproduction-integration). Original agents ở `core/agents.py`, vòng lặp/constants ở `core/chat_manager.py` và `core/const.py`.
 
-Dùng classes và transitions gốc; thay Azure/hardcoded transport bằng provider hook, bỏ Hello-world ping/gold logging và khôi phục absolute DB root bị Selector strip dấu `/`. Schema nhỏ có thể bỏ qua LLM pruning theo heuristic gốc.
+Giữ classes/transitions gốc; `core/llm.py` gọi native compatible provider, không inject `sys.modules` và không load Azure config. `core/agents.py` giữ absolute DB path và dùng read-only SQL worker trực tiếp; bỏ Hello-world ping/gold logging trong standalone runner. Schema nhỏ có thể bỏ qua LLM pruning theo heuristic gốc.
 
 Parser nhận plain SQL hoặc SQL fence cuối, từ chối error sentinel. Metadata connection read-only; Refiner gọi worker có timeout và nhận preview/error theo contract gốc. Generation cap mặc định 1024; execution feedback được giữ.
 

@@ -6,7 +6,7 @@ Contracts input/output và artifact layout ở [contracts](contracts.md); adapta
 
 ## Source versioning và manifests
 
-Repo đã chuyển sang 3 forks + 5 submodules. [Workflow Git và experiment manifests](repository_workflow.md) mô tả clone, trace diff, cập nhật source pins và production runs. Các lệnh bên dưới vẫn dùng cho development; benchmark chính thức thêm `--production --experiment-manifest <path>` cho mỗi inference stage. Không dùng lại prompt bundle DAIL cũ khi fork commit thay đổi.
+Repo dùng 3 standalone forks + 5 submodules. Mỗi fork có README, `.env` và native CLI riêng (`python -m reproduction.run`); repo chính gọi CLI bằng subprocess, không inject provider/modules. [Workflow Git và experiment manifests](repository_workflow.md) mô tả clone, trace diff, cập nhật source pins và production runs. Các lệnh bên dưới vẫn dùng cho development; benchmark chính thức thêm `--production --experiment-manifest <path>` cho mỗi inference stage. Không dùng lại prompt bundle DAIL cũ khi fork commit thay đổi.
 
 ## Setup
 
@@ -67,13 +67,13 @@ Không cung cấp dev gold cho target/retrieval; train pool được đối chi�
 
 ## Chạy inference
 
-Vanilla root env; DIN/MAC dùng interpreter riêng. Các flags chung đã test với cả main và smoke:
+Vanilla dùng root env. Với DIN/MAC/DAIL, wrapper tự chọn interpreter `.venv/bin/python` trong fork và chạy native CLI từ thư mục fork. Có thể dùng wrapper hoặc chạy trực tiếp theo `REPRODUCTION.md` của từng fork. Các flags chung đã test với cả main và smoke:
 
 ```bash
 uv run python -m scripts.run_vanilla --input data/prepared/spider-v1/main.jsonl --manifest data/prepared/spider-v1/manifest.json --tables data/prepared/spider-v1/tables.json --db-root data/spider/database --run-dir runs/my-vanilla
 ```
 
-DIN/MAC: dùng `<upstream>/.venv/bin/python -m scripts.run_method --method din_sql|mac_sql` cùng các flags trên. DAIL: root `python -m scripts.run_method --method dail_sql`, thêm `--dail-prompts <bundle>`; preliminary/final có run-dir riêng.
+DIN/MAC: `uv run python -m scripts.run_method --method din_sql|mac_sql` cùng các flags trên. DAIL: `uv run python -m scripts.run_method --method dail_sql`, thêm `--dail-prompts <bundle>`; preliminary/final có run-dir riêng. Các lệnh `scripts.prepare_dail`/`scripts.prepare_dail_assets` cũng chuyển sang CLI trong fork. Wrapper truyền đường dẫn `.env` và metadata đã xác minh; không đưa key lên command line.
 
 Để đo toàn pipeline DAIL, sau hai lượt dùng:
 

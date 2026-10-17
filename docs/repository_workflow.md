@@ -4,15 +4,15 @@ Repo chính: [dleqhuy/text2sql-reproduction](https://github.com/dleqhuy/text2sql
 
 | Source | Repository | Trách nhiệm |
 |---|---|---|
-| DAIL | [dleqhuy/DAIL-SQL](https://github.com/dleqhuy/DAIL-SQL/tree/codex/reproduction-integration) | Linking/cache, pinned embedding hook, output parsing, diagnostic không dùng dev gold |
-| DIN | [dleqhuy/Few-shot-NL2SQL-with-prompting](https://github.com/dleqhuy/Few-shot-NL2SQL-with-prompting/tree/codex/reproduction-integration) | Load prompt functions gốc, classification parsing, stages và correction compatibility |
-| MAC | [dleqhuy/MAC-SQL](https://github.com/dleqhuy/MAC-SQL/tree/codex/reproduction-integration) | Agent integration, parsing, vòng refinement và hooks cho SQL guard |
+| DAIL | [dleqhuy/DAIL-SQL](https://github.com/dleqhuy/DAIL-SQL/tree/codex/reproduction-integration) | Native API/CLI, linking/cache, pinned retrieval và hai lượt inference |
+| DIN | [dleqhuy/Few-shot-NL2SQL-with-prompting](https://github.com/dleqhuy/Few-shot-NL2SQL-with-prompting/tree/codex/reproduction-integration) | Native API/CLI, prompt module import an toàn và bốn stages |
+| MAC | [dleqhuy/MAC-SQL](https://github.com/dleqhuy/MAC-SQL/tree/codex/reproduction-integration) | Native API/CLI, original agents và SQL guard/refinement |
 | Spider | Upstream taoyds/spider | Legacy evaluator/hardness, không fork |
 | Test Suite | Upstream taoyds/test-suite-sql-eval | Official execution comparison, không fork |
 
 Cả năm source là submodules trong `third_party/`. Gitlink của repo chính là nguồn duy nhất cho executable commit. `.gitmodules` giữ URL; `configs/upstream_lock.json` chỉ giữ tên thư mục, vai trò, URL upstream và baseline commit để so diff, không lặp lại executable commit.
 
-Repo chính giữ bounded transport, budgets, contracts, SQLite read-only/timeout, datasets/splits, artifact storage, metrics và reports. Các fork nhận shared infrastructure qua hooks; không chứa provider key hay phụ thuộc import ngược vào repo chính. Một số loader/hook vẫn cần áp dụng khi chạy source legacy, nhưng implementation của chúng đã có lịch sử Git trong fork.
+Mỗi fork sở hữu native API client, CLI, bounded retries/budgets, SQL guard và checkpoints trong `reproduction/`; không import repo chính. Repo chính xác minh dữ liệu/manifests/source pins rồi gọi subprocess, chuẩn hóa và đánh giá outputs. Runtime chung được version ở cả ba fork và có test phát hiện drift; credentials vẫn ở env. Vanilla dùng runtime của repo chính.
 
 ## Clone và kiểm tra phiên bản
 
