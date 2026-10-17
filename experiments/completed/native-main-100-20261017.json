@@ -28,9 +28,7 @@
       "median_inference_s": 1.8173931045166682,
       "statuses": {
         "ok": 100
-      },
-      "test_suite_delta_pp": -5,
-      "original_db_delta_pp": -4
+      }
     },
     {
       "method": "DAIL-SQL",
@@ -49,9 +47,7 @@
       "median_inference_s": 4.376214958494529,
       "statuses": {
         "ok": 100
-      },
-      "test_suite_delta_pp": -2,
-      "original_db_delta_pp": -2
+      }
     },
     {
       "method": "DIN-SQL",
@@ -71,9 +67,7 @@
       "statuses": {
         "ok": 99,
         "parse_error": 1
-      },
-      "test_suite_delta_pp": 0,
-      "original_db_delta_pp": 1
+      }
     },
     {
       "method": "MAC-SQL",
@@ -92,17 +86,15 @@
       "median_inference_s": 3.092726187489461,
       "statuses": {
         "ok": 100
-      },
-      "test_suite_delta_pp": -6,
-      "original_db_delta_pp": -3
+      }
     }
   ],
   "artifacts": {
     "reports/benchmark_native_100_20261017.md": {
-      "sha256": "dd7ec0b8a8619ac13d01e5e3a342296077e5e7157b59864f3392897a1a0fa437"
+      "sha256": "2fe67efc094985c5cdd720ce059a2d5b2b1bd15f73184c0a8d626e83f392a251"
     },
     "reports/comparison_native_100_20261017.json": {
-      "sha256": "1730622a844a36000f0372648795a311eee8d82729ea1521e51efa5a7a8026cb"
+      "sha256": "4dae70efa70bc1d7d57abe9a3fa5e88f13bd4a4e8803a76631e7c10fe657e732"
     },
     "experiments/manifests/native-main-100-20261017.json": {
       "sha256": "4b36879c9d609fa0d9b61133a0f1d232fa12470ce5aceb157ae39714ddbd6f68"
@@ -1823,5 +1815,6 @@
     "runs/spider-v1-native-20261017-dail-final-prompts.json": {
       "sha256": "09d08cfac97bb6598f46e5e4d6b6d5ada77439745d1db8319ed8c2c1e69e8117"
     }
-  }
+  },
+  "documentation_note": "Removed comparisons to the retired benchmark during documentation cleanup. Report/comparison hashes reflect this edit; inference outputs, evaluation metrics, and the prepared source manifest are unchanged."
 }

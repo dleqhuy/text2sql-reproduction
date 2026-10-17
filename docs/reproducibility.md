@@ -104,15 +104,9 @@ Primary params: plug_value=false, keep_distinct=true, seed=42. Dùng official qu
 
 `--metric execution` là cùng comparison engine nhưng chỉ DB gốc, không gọi là TSA. `--metric legacy` giữ reference metric cũ có hạn chế backtick. Evaluator mặc định hiện là execution; phải chỉ rõ test-suite để chấm primary metric. Mỗi evaluation ghi metric/config/DB hashes; summary kiểm tra input/prediction hashes và không trộn metrics.
 
-## Tạo lại báo cáo main-100
+## Kết quả hiện tại
 
-Khi đủ predictions và hai evaluation cho bốn run `spider-v1-main-{vanilla,dail,din,mac}`, tạo lại bảng so sánh và tám case studies mà không gọi LLM:
-
-```bash
-uv run python -m scripts.report_benchmark
-```
-
-Lệnh kiểm tra hashes inputs/predictions so với metrics, rồi ghi `reports/benchmark_100.md` và `reports/comparison.json`. Tên run cố định cho experiment hiện tại.
+[Báo cáo benchmark](../reports/benchmark_native_100_20261017.md) tổng hợp bốn run `spider-v1-native-20261017-{vanilla,dail,din,mac}`. [Comparison JSON](../reports/comparison_native_100_20261017.json) chứa metrics; [completed record](../experiments/completed/native-main-100-20261017.json) ghi hashes của artifacts. Mỗi run có `eval-test-suite/metrics.json` và `eval-execution/metrics.json`, tạo bằng evaluator và summarizer ở trên.
 
 ## Kiểm tra
 
@@ -122,4 +116,4 @@ uv run ruff check scripts tests
 uv run pytest -q
 ```
 
-Tests không gọi provider thật; các original upstream tests chạy subprocess riêng và có prerequisites nguồn/NLTK/env. Suite tests bao phủ backticks, DISTINCT, neighbor database counterexample và write rejection. Parser tests bao phủ DIN thiếu subquestions/Label và MAC plain/fenced SQL. Phạm vi kiểm chứng và các giới hạn ở [verification status](implementation/status.md).
+Tests không gọi provider thật; các original upstream tests chạy subprocess riêng và có prerequisites nguồn/NLTK/env. Suite tests bao phủ backticks, DISTINCT, neighbor database counterexample và write rejection. Parser tests bao phủ DIN thiếu subquestions/Label và MAC plain/fenced SQL. Phạm vi kiểm chứng và các giới hạn ở [experiment protocol](experiment_protocol.md).

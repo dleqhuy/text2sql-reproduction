@@ -1,6 +1,6 @@
 # Benchmark native CLI — 100 câu Spider dev, 17/10/2026
 
-Chạy inference mới cho cả bốn method trên cùng 100 câu/20 DB của benchmark cũ. Model: `cx/gpt-6-luna`, temperature=0. DIN, MAC và hai bước DAIL chạy qua native CLI của fork; Vanilla chạy tại repo chính. Các run inference được chạy tuần tự.
+Chạy inference cho cả bốn method trên cùng 100 câu/20 DB đã cố định. Model: `cx/gpt-6-luna`, temperature=0. DIN, MAC và hai bước DAIL chạy qua native CLI của fork; Vanilla chạy tại repo chính. Các run inference được chạy tuần tự.
 
 | Method | Test Suite đúng/100 | DB gốc đúng/100 | SQL valid/100 | API requests | Mean inference (s/câu) |
 |---|---:|---:|---:|---:|---:|
@@ -16,17 +16,6 @@ Chạy inference mới cho cả bốn method trên cùng 100 câu/20 DB của be
 - Mẫu số luôn 100, gồm cả API/parse/SQL failures. DAIL cộng cả preliminary và final calls/tokens/latency, n=1, không self-consistency. Mean inference không gồm chuẩn bị linking/retrieval offline; không phải phép đo throughput trên phần cứng độc lập.
 - Token caps: Vanilla/MAC 1024; DIN 600 cho linking/classification/generation và 350 cho correction; DAIL 200/call. Retry tối đa 3 attempts, timeout 90 giây/request.
 - Source, model, config và data được khóa trong [prepared manifest](../experiments/manifests/native-main-100-20261017.json). Production preflight kiểm tra source sạch và gitlinks đúng trước mỗi run.
-
-## So với lần trước
-
-| Method | Test Suite cũ → mới | Δ điểm % | DB gốc cũ → mới | Δ điểm % |
-|---|---:|---:|---:|---:|
-| Vanilla | 69 → 64 | -5 | 81 → 77 | -4 |
-| DAIL-SQL | 76 → 74 | -2 | 87 → 85 | -2 |
-| DIN-SQL | 78 → 78 | +0 | 86 → 87 | +1 |
-| MAC-SQL | 73 → 67 | -6 | 86 → 83 | -3 |
-
-Báo cáo cũ được giữ nguyên tại [benchmark_100.md](benchmark_100.md). Đây là một lần chạy mới sau migration và sửa xử lý output (gồm fenced SQL của DIN); cùng tên model/temperature=0 không bảo đảm provider trả cùng output. Chênh lệch một lần chạy không chứng minh ảnh hưởng riêng của migration hoặc ý nghĩa thống kê.
 
 ## Usage
 
@@ -47,7 +36,7 @@ Vanilla có một SQL không execute được tại `dev_001032`: output còn pl
 
 ## Artifacts và chạy lại
 
-[Comparison JSON](comparison_native_100_20261017.json) chứa metrics và delta. [Completed record](../experiments/completed/native-main-100-20261017.json) ghi hashes của artifacts. Predictions/raw responses/checkpoints được giữ local trong các thư mục sau:
+[Comparison JSON](comparison_native_100_20261017.json) chứa metrics. [Completed record](../experiments/completed/native-main-100-20261017.json) ghi hashes của artifacts. Predictions/raw responses/checkpoints được giữ local trong các thư mục sau:
 
 - `runs/spider-v1-native-20261017-vanilla/`: predictions, run config và hai thư mục `eval-test-suite/`, `eval-execution/`.
 - `runs/spider-v1-native-20261017-dail/`: predictions, run config và hai thư mục `eval-test-suite/`, `eval-execution/`.

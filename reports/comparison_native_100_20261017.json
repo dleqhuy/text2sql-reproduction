@@ -35,9 +35,7 @@
       "median_inference_s": 1.8173931045166682,
       "statuses": {
         "ok": 100
-      },
-      "test_suite_delta_pp": -5,
-      "original_db_delta_pp": -4
+      }
     },
     {
       "method": "DAIL-SQL",
@@ -56,9 +54,7 @@
       "median_inference_s": 4.376214958494529,
       "statuses": {
         "ok": 100
-      },
-      "test_suite_delta_pp": -2,
-      "original_db_delta_pp": -2
+      }
     },
     {
       "method": "DIN-SQL",
@@ -78,9 +74,7 @@
       "statuses": {
         "ok": 99,
         "parse_error": 1
-      },
-      "test_suite_delta_pp": 0,
-      "original_db_delta_pp": 1
+      }
     },
     {
       "method": "MAC-SQL",
@@ -99,10 +93,7 @@
       "median_inference_s": 3.092726187489461,
       "statuses": {
         "ok": 100
-      },
-      "test_suite_delta_pp": -6,
-      "original_db_delta_pp": -3
+      }
     }
-  ],
-  "baseline_comparison": "reports/comparison.json"
+  ]
 }

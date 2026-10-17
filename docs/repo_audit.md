@@ -25,7 +25,7 @@ Nguồn: [Few-shot-NL2SQL-with-prompting](https://github.com/MohammadrezaPourrez
 
 `DIN-SQL.py` đã bỏ argv/key/gold side effects khi import, thay API cũ bằng native compatible client và chuyển main sang CLI. Loader import module bình thường, không còn rewrite AST. Test xác nhận original prompt constants/builders không đổi; giữ bốn stages, stop sequences và caps 600/350.
 
-Classification parser nhận quoted/plain/Markdown label. Khi NESTED thiếu subquestions, dùng câu hỏi gốc làm subproblem và log fallback; không bỏ generation/correction. Correction hỗ trợ full SELECT, continuation và fenced SQL. Bốn output lỗi fence trong benchmark cũ vẫn giữ nguyên và tính sai; parser mới chưa được dùng để gán lại điểm cho chúng.
+Classification parser tìm label theo các format được hỗ trợ; response trần `EASY` vẫn có thể gây parse error như `dev_000507` trong benchmark hiện tại. Khi NESTED thiếu subquestions, dùng câu hỏi gốc làm subproblem và log fallback; không bỏ generation/correction. Correction hỗ trợ full SELECT, continuation và fenced SQL.
 
 ## MAC-SQL
 
@@ -39,7 +39,7 @@ Parser nhận plain SQL hoặc SQL fence cuối, từ chối error sentinel. Met
 
 Primary metric dùng upstream `taoyds/test-suite-sql-eval`, baseline `e97acc546ecbee8fa27fa8dbf025ef61493a876c`; gọi comparison function gốc với read-only connection/deadline. Single-original-DB execution là metric riêng. Spider legacy baseline `b7b5b8c890cd30e35427348bb9eb8c6d1350ca7c` dùng cho reference/hardness; parser legacy có hạn chế backticks.
 
-Root dùng `uv.lock`; từng fork giữ `requirements-compatible.lock.txt` cho môi trường của mình. DIN/MAC chỉ cần inference dependencies; DAIL lock bao gồm retrieval/preprocessing dependencies. [Runbook](reproducibility.md) chứa commands; [protocol](experiment_protocol.md) định nghĩa so sánh; [benchmark](../reports/benchmark_100.md) ghi kết quả trước migration.
+Root dùng `uv.lock`; từng fork giữ `requirements-compatible.lock.txt` cho môi trường của mình. DIN/MAC chỉ cần inference dependencies; DAIL lock bao gồm retrieval/preprocessing dependencies. [Runbook](reproducibility.md) chứa commands; [protocol](experiment_protocol.md) định nghĩa so sánh; [benchmark](../reports/benchmark_native_100_20261017.md) ghi kết quả hiện tại.
 
 ## License đã kiểm tra
 

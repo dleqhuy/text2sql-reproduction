@@ -1,9 +1,8 @@
 # Experiment references
 
-- `historical/spider-v1-main-100.json`: references to benchmark artifacts generated before the fork/submodule migration, with their original recorded provenance. It is not accepted by the production runner as a new experiment.
-- `manifests/`: immutable prepared experiment configurations captured from clean committed source. Prepared does not mean executed; actual inference/evaluation artifacts live in ignored `runs/` directories.
-- `completed/native-main-100-20261017.json`: completed native CLI rerun on the same 100 IDs, with report/metrics and hashes of local run artifacts. Its prepared source/config/data references remain in `manifests/native-main-100-20261017.json`.
+- `manifests/native-main-100-20261017.json`: source, model, config và data references của benchmark hiện tại. State `prepared` tự nó không chứng minh inference đã chạy.
+- `completed/native-main-100-20261017.json`: kết quả đã hoàn thành, report/metrics và hashes của local artifacts. Predictions, responses và evaluations nằm trong ignored `runs/` directories.
 
-Create, commit and verify a manifest using the [repository workflow](../docs/repository_workflow.md). Source revisions come from gitlinks, not duplicate executable pins in upstream metadata. Secrets, datasets and source snapshots do not belong here.
+Tạo và commit manifest từ source sạch theo [repository workflow](../docs/repository_workflow.md). Source revisions lấy từ gitlinks. Khi đổi runtime/config/model/data, tạo manifest mới; không sửa source references của experiment đã hoàn thành. Không lưu secrets, datasets hoặc source snapshots ở đây.
 
-Superseded prepared manifests that never ran are removed from the working tree; Git history retains them. Pre-migration benchmark provenance stays in historical; new completed experiments are recorded in completed.
+Benchmark và tài liệu cũ đã được bỏ khỏi working tree; các file từng commit vẫn có trong Git history. Artifacts local đã xoá không được lưu trong Git.

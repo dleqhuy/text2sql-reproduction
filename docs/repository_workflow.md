@@ -38,7 +38,7 @@ git add third_party/MAC-SQL
 git commit -m "Pin MAC integration revision"
 ```
 
-Push fork trước parent để người clone sau tải được commit. Remote `upstream` có sẵn trong các checkout đã migration; fresh clone chỉ có `origin`, có thể thêm `upstream` theo metadata khi cần cập nhật baseline.
+Push fork trước parent để người clone sau tải được commit. Fresh clone chỉ có `origin`; có thể thêm remote `upstream` theo metadata khi cần cập nhật baseline.
 
 ## Trace thay đổi
 
@@ -80,12 +80,12 @@ uv run python -m scripts.run_method --method vanilla \
   --db-root data/spider/database --run-dir runs/my-smoke-vanilla
 ```
 
-Run metadata ghi manifest hash và root commit, đồng thời giữ config/bundle/usage provenance như trước. Development/fixture runs vẫn chạy được không có `--production`; không dùng chúng làm experiment đã xác nhận manifest. Với DAIL, tạo prompt bundles mới khớp fork commit bằng commands ở [runbook](reproducibility.md), rồi chạy cả hai lượt và aggregate như cũ. Bundle cũ bị từ chối khi source commit khác.
+Run metadata ghi manifest hash và root commit, đồng thời giữ config/bundle/usage provenance. Development/fixture runs vẫn chạy được không có `--production`; không dùng chúng làm experiment đã xác nhận manifest. Với DAIL, tạo prompt bundles mới khớp fork commit bằng commands ở [runbook](reproducibility.md), rồi chạy cả hai lượt và aggregate. Bundle cũ bị từ chối khi source commit khác.
 
-## Benchmark trước migration
+## Kết quả experiment
 
-[Historical manifest](../experiments/historical/spider-v1-main-100.json) tham chiếu đúng artifacts/provenance của benchmark đã hoàn thành. Các run gốc ghi root dirty cùng source hashes; không gán cho chúng commit fork mới hoặc tuyên bố khôi phục được uncommitted code từ hash. Predictions, metrics, reports và accounting cũ được giữ nguyên. Migration được kiểm tra bằng fixtures/offline tests; không tự động chạy lại benchmark có tính phí.
+[Benchmark hiện tại](../reports/benchmark_native_100_20261017.md) có [completed record](../experiments/completed/native-main-100-20261017.json) tham chiếu source manifest và hashes của predictions/config/evaluation. Giữ manifest gốc của experiment đã hoàn thành; khi đổi runtime, tạo manifest mới cho lượt chạy tiếp theo.
 
 Raw data, environments, `.env` và runs tiếp tục ignore. Người clone khác cần tải assets theo runbook; submodules chỉ giải quyết source versioning.
 
-Phạm vi kiểm chứng migration và giới hạn môi trường ở [verification status](implementation/status.md).
+Phạm vi kiểm chứng và giới hạn môi trường ở [experiment protocol](experiment_protocol.md).

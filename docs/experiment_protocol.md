@@ -16,6 +16,8 @@ Báo valid SQL, API requests, token totals/coverage và mean/median latency. DAI
 
 ## Phạm vi kết luận
 
-Smoke nằm trong main và đã dùng để sửa output handling, nên main không phải holdout độc lập. Các runs có thời gian chồng lấp; latency chỉ mô tả experiment này. Đây là adapted reproduction trên subset, không phải full-dev hoặc điểm paper gốc.
+Smoke nằm trong main và đã dùng để sửa output handling, nên main không phải holdout độc lập. Benchmark hiện tại chạy inference tuần tự; latency chỉ mô tả experiment này, không phải phép đo throughput độc lập. Cùng model/temperature=0 không bảo đảm provider trả cùng output giữa các lượt. Đây là adapted reproduction trên subset, không phải full-dev hoặc điểm paper gốc.
 
-[Báo cáo benchmark](../reports/benchmark_100.md) giữ kết quả trước migration; [workflow](repository_workflow.md) quy định manifests/source pins cho experiment mới. [Verification status](implementation/status.md) ghi phạm vi đã kiểm chứng.
+Inference thật và official evaluation đã được kiểm chứng trên Python 3.11.16/macOS arm64. Cold setup toàn bộ dependencies/assets trên máy khác chưa được kiểm chứng; các lần kiểm tra fresh source clone dùng environments hiện có.
+
+[Báo cáo benchmark](../reports/benchmark_native_100_20261017.md) ghi kết quả và lỗi quan sát; [workflow](repository_workflow.md) quy định manifests/source pins cho experiment mới.
